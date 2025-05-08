@@ -1,5 +1,6 @@
 import React from 'react'
 import { useState , useEffect } from 'react'
+import { Text } from 'react-native'
 import axios from 'axios';
 
 function Test() {
@@ -12,10 +13,8 @@ useEffect(()=>{
 },[]);
   return (
     <>
-    <h1>Teachers List</h1>
-      <ul>
-        {teachers}
-      </ul>
+    <Text>Teachers List</Text>
+    <Text>{teachers}</Text>
     </>
   )
 }
