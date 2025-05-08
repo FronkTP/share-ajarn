@@ -4,7 +4,7 @@ import axios from 'axios';
 
 function Test() {
 
-const [teachers,setTeachers] = useState([{}])
+const [teachers,setTeachers] = useState("")
 useEffect(()=>{
     axios.get('http://localhost:5000/teachers')
     .then(response => setTeachers(response.data))
@@ -12,11 +12,9 @@ useEffect(()=>{
 },[]);
   return (
     <>
-        <h1>Teachers List</h1>
+    <h1>Teachers List</h1>
       <ul>
-        {teachers.map((teacher, index) => (
-          <li key={index}>{teacher.Name}</li>  // or adjust depending on your object shape
-        ))}
+        {teachers}
       </ul>
     </>
   )
