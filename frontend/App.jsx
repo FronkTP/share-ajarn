@@ -1,10 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import Test from './components/Test'
 
 export default function App() {
   return (
     <View style={styles.container}>
       <Text>Open up App.jsx to start working on your app!</Text>
+      <Text>Test test test</Text>
+      <Text>NO WAY THERE NO H1</Text>
+      <Test/>
       <StatusBar style="auto" />
     </View>
   );
