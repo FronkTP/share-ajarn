@@ -1,9 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
-import { Text, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import HomeScreen from './screens/HomeScreen';
+import LoginScreen from './screens/LoginScreen';
+import ProfessorListScreen from './screens/ProfessorListScreen';
 import ProfessorDetailScreen from './screens/ProfessorDetailScreen';
 import AddReviewScreen from './screens/AddReviewScreen';
 
@@ -13,8 +13,9 @@ export default function App() {
   return (
     <>
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Navigator initialRouteName="Login">
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="ProfessorList" component={ProfessorListScreen} />
         <Stack.Screen name="ProfessorDetail" component={ProfessorDetailScreen} />
         <Stack.Screen name="AddReview" component={AddReviewScreen} />
       </Stack.Navigator>
@@ -23,12 +24,3 @@ export default function App() {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

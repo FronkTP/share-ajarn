@@ -1,15 +1,20 @@
 import { View, Text, Button, StyleSheet } from 'react-native';
 
-export default function ProfessorDetailScreen({ navigation }) {
+export default function ProfessorDetailScreen({ route, navigation }) {
+  const { professorId } = route.params;
+
+  // Dummy professor data
+  const professor = { id: professorId, name: 'Charnchai', department: 'electrical' };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Professor Detail Page</Text>
-      <Text>Professor Name: Dr. Example</Text>
-      <Text>Department: Computer Engineering</Text>
-      <Text>Average Rating: 4.3 ⭐</Text>
+      <Text style={styles.title}>{professor.name}</Text>
+      <Text>Department: {professor.department}</Text>
+      <Text>Average Rating: 4.3</Text>
+
       <Button
         title="Rate This Professor"
-        onPress={() => navigation.navigate('AddReview')}
+        onPress={() => navigation.navigate('AddReview', { professorId })}
       />
     </View>
   );
@@ -22,6 +27,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-start',
   },
-  title: {
+    title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
 });

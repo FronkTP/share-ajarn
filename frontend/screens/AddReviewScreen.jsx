@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 
-export default function AddReviewScreen({ navigation }) {
+export default function AddReviewScreen({ route, navigation }) {
+  const { professorId } = route.params;
   const [rating, setRating] = useState('');
   const [comment, setComment] = useState('');
+
+  const handleSubmit = () => {
+    console.log('Submitted:', { professorId, rating, comment });
+    navigation.goBack();
+  };
 
   return (
     <View style={styles.container}>
@@ -24,7 +30,7 @@ export default function AddReviewScreen({ navigation }) {
         onChangeText={setComment}
       />
 
-      <Button title="Submit" onPress={() => navigation.goBack()} />
+      <Button title="Submit Review" onPress={handleSubmit} />
     </View>
   );
 }
@@ -36,7 +42,16 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
   input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 15,
+    width: '100%',
   },
 });
