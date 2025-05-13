@@ -3,16 +3,16 @@ import Test from '../components/Test'
 
 export default function ProfessorList({ navigation }) {
   const professors = [
-    { id: '1', name: 'Dr. Charnchai' },
-    { id: '2', name: 'Dr. David' },
-    { id: '3', name: 'Dr. Yan' },
-    { id: '4', name: 'Dr. Panda' },
+    { id: '1', name: 'Dr. Charnchai', department: 'FUCK YOU1' },
+    { id: '2', name: 'Dr. David', department: 'FUCK YOU2' },
+    { id: '3', name: 'Dr. Yan', department: 'FUCK YOU3' },
+    { id: '4', name: 'Dr. Panda', department: 'FUCK YOU4' },
   ];
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.card}
-      onPress={() => navigation.navigate('ProfessorDetail', { professorId: item.id })}
+      onPress={() => navigation.navigate('ProfessorDetail', { professorId: item.id , name: item.name , department: item.department})}
     >
       <Text style={styles.name}>{item.name}</Text>
     </TouchableOpacity>

@@ -1,15 +1,13 @@
 import { View, Text, Button, StyleSheet } from 'react-native';
 
 export default function ProfessorDetailScreen({ route, navigation }) {
-  const { professorId } = route.params;
+  const { professorId, name, department } = route.params;
 
-  // Dummy professor data
-  const professor = { id: professorId, name: 'Charnchai', department: 'electrical' };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{professor.name}</Text>
-      <Text>Department: {professor.department}</Text>
+      <Text style={styles.title}>{name}</Text>
+      <Text>Department: {department}</Text>
       <Text>Average Rating: 4.3</Text>
 
       <Button
