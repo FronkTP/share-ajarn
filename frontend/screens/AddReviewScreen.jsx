@@ -1,29 +1,40 @@
 import { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import Stars from 'react-native-stars';
 
 export default function AddReviewScreen({ route, navigation }) {
   const { professorId } = route.params;
-  const [rating, setRating] = useState('');
+  const [course,setCourse] = useState('');
   const [comment, setComment] = useState('');
+  const [stars,setStars] = useState(0);
 
   const handleSubmit = () => {
-    console.log('Submitted:', { professorId, rating, comment });
+    console.log('Submitted:', { professorId, course , stars, comment });
     navigation.goBack();
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Add a Review</Text>
-
       <TextInput
-        placeholder="Rating (1-5)"
-        keyboardType="numeric"
-        style={styles.input}
-        value={rating}
-        onChangeText={setRating}
+      placeholder="Course name"
+      style={styles.input}
+      value={course}
+      onChangeText={setCourse}
       />
-
-      <TextInput
+    <View style={styles.input}>
+    <Text>Rating</Text>
+    <Stars
+      default={0}
+      update={(val)=> setStars(val)}
+      spacing={4}
+      starSize={40}
+      count={5}
+      fullStar={require('../assets/starFilled.png')}
+      emptyStar={require('../assets/starEmpty.png')}
+    />
+    </View>
+    <TextInput
         placeholder="Optional Comment"
         style={styles.input}
         value={comment}
