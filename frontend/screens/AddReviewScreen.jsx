@@ -8,10 +8,35 @@ export default function AddReviewScreen({ route, navigation }) {
   const [comment, setComment] = useState('');
   const [stars,setStars] = useState(0);
 
-  const handleSubmit = () => {
-    console.log('Submitted:', { professorId, course , stars, comment });
-    navigation.goBack();
-  };
+const handleSubmit = async () => {
+  try {
+    const response = await fetch('http://127.0.0.1:5000/add_review', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        professorId,
+        course,
+        stars,
+        comment,
+      }),
+    });
+
+    const data = await response.json();
+    console.log(data);
+
+    if (response.ok) {
+      alert('Review submitted!');
+      navigation.goBack();
+    } else {
+      alert('Failed to submit: ' + data.error);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('An error occurred.');
+  }
+};
 
   return (
     <View style={styles.container}>
@@ -39,9 +64,9 @@ export default function AddReviewScreen({ route, navigation }) {
         style={styles.input}
         value={comment}
         onChangeText={setComment}
-      />
+    />
 
-      <Button title="Submit Review" onPress={handleSubmit} />
+    <Button title="Submit Review" onPress={handleSubmit} />
     </View>
   );
 }
