@@ -13,7 +13,7 @@ app.config['MYSQL_DB'] = 'shareajarn'        # your DB name
 
 mysql = MySQL(app)
 
-
+#add review to each professor
 @app.route('/add_review', methods=['POST'])
 def add_review():
     data = request.json
@@ -33,6 +33,20 @@ def add_review():
         return jsonify({'message': '✅ Review added successfully'})
     except MySQLdb.Error as e:
         return jsonify({'error': str(e)}), 500
+
+#get review by professor_id  
+@app.route('/get_reviews/<int:professor_id>', methods=['GET'])
+def get_reviews(professor_id):
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT course, stars, comment FROM reviews WHERE professorID = %s", (professor_id,))
+        reviews = cur.fetchall()
+        cur.close()
+
+        review_list = [{"course": row[0], "stars": row[1], "comment": row[2]} for row in reviews]
+        return jsonify(review_list)
+    except MySQLdb.Error as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
