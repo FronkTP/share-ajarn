@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, FlatList, Image, Dimensions, SafeAreaView, StyleSheet, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, Image, Dimensions, SafeAreaView, StyleSheet } from 'react-native';
 
 const colors = {
   background: '#fffcf2',
