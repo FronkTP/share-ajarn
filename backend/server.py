@@ -2,13 +2,17 @@ from flask import Flask, jsonify , request
 from flask_cors import CORS
 from flask_mysqldb import MySQL
 import MySQLdb
+from dotenv import load_dotenv
+import os
+load_dotenv()
+db_password = os.environ.get("DB_PASSWORD")
 
 app = Flask(__name__)
 CORS(app)
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'           # your MySQL username
-app.config['MYSQL_PASSWORD'] = 'Isuckingame1'   # your MySQL password
+app.config['MYSQL_PASSWORD'] = db_password   # your MySQL password
 app.config['MYSQL_DB'] = 'shareajarn'        # your DB name
 
 mysql = MySQL(app)
@@ -39,7 +43,7 @@ def add_review():
 def get_reviews(professor_id):
     try:
         cur = mysql.connection.cursor()
-        cur.execute("SELECT course, stars, comment FROM reviews HERE professorID = %s", (professor_id,))
+        cur.execute("SELECT course, stars, comment FROM reviews WHERE professorId = %s", (professor_id,))
         reviews = cur.fetchall()
         cur.close()
 

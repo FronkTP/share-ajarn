@@ -1,24 +1,30 @@
 import { View, Text, Button, StyleSheet, FlatList } from 'react-native';
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function ProfessorDetailScreen({ route, navigation }) {
   const { professorId, name, department } = route.params;
   const [reviews, setReviews] = useState([]);
 
-    useEffect(() => {
-    fetch(`http://127.0.0.1:5000/get_reviews/${professorId}`)
-      .then((response) => response.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setReviews(data);
-        } else {
-          console.error('Error:', data);
-        }
-      })
-      .catch((error) => {
-        console.error('Fetch error:', error);
-      });
-  }, [professorId]);
+  const fetchReviews = async () => {
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/get_reviews/${professorId}`);
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        setReviews(data);
+      } else {
+        console.error('Unexpected data format:', data);
+      }
+    } catch (error) {
+      console.error('Fetch error:', error);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchReviews();
+    }, [professorId])
+  );
 
   const renderReview = ({ item }) => (
     <View style={styles.reviewCard}>
