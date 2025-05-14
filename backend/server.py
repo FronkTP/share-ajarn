@@ -39,7 +39,7 @@ def add_review():
 def get_reviews(professor_id):
     try:
         cur = mysql.connection.cursor()
-        cur.execute("SELECT course, stars, comment FROM reviews WHERE professorID = %s", (professor_id,))
+        cur.execute("SELECT course, stars, comment FROM reviews HERE professorID = %s", (professor_id,))
         reviews = cur.fetchall()
         cur.close()
 
