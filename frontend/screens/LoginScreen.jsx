@@ -20,7 +20,7 @@ export default function LoginScreen({ navigation }) {
     }
   }, [response]);
 
-    const fetchUserInfo = async (token) => {
+  const fetchUserInfo = async (token) => {
     try {
       const res = await fetch("https://www.googleapis.com/userinfo/v2/me", {
         headers: { Authorization: `Bearer ${token}` },
@@ -29,10 +29,21 @@ export default function LoginScreen({ navigation }) {
       setUserInfo(user);
       await AsyncStorage.setItem("user", JSON.stringify(user));
 
-      // Navigate after successful login
+      // Send to backend
+      await fetch("http://127.0.0.1:5000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: user.email,
+          name: user.name,
+          isAdmin: false, // Change logic here if you want to assign admin conditionally
+        }),
+      });
+
+      // Navigate after storing user
       navigation.replace("ProfessorList");
     } catch (error) {
-      console.error("Failed to fetch user info", error);
+      console.error("Failed to fetch or send user info:", error);
     }
   };
 

@@ -17,6 +17,30 @@ app.config['MYSQL_DB'] = 'shareajarn'        # your DB name
 
 mysql = MySQL(app)
 
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    email = data.get('email')
+    name = data.get('name')
+    is_admin = data.get('isAdmin', False)  # Default to False
+
+    try:
+        cur = mysql.connection.cursor()
+
+        # Insert or update user
+        cur.execute("""
+            INSERT INTO users (email, name, is_admin)
+            VALUES (%s, %s, %s)
+            ON DUPLICATE KEY UPDATE name=%s, is_admin=%s
+        """, (email, name, is_admin, name, is_admin))
+
+        mysql.connection.commit()
+        cur.close()
+        return jsonify({'message': '✅ User stored successfully'})
+    except MySQLdb.Error as e:
+        return jsonify({'error': str(e)}), 500
+
 #add review to each professor
 @app.route('/add_review', methods=['POST'])
 def add_review():
