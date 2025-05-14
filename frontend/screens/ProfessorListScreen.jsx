@@ -144,7 +144,6 @@ const renderItem = ({ item }) => (
 
   return (
     <View style={styles.container}>
-      <Test/>
       <Text style={styles.title}>Professor List</Text>
       <FlatList
         data={professors}
