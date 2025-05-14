@@ -37,20 +37,44 @@ export default function ProfessorList({ navigation }) {
   
   const professors = [
     {
-      id: '1',
-      name: 'Dr. Charnchai',
-      department: 'Electrical Engineering',
-      avgRating: 0,
-      image: '',
-      courses: ['Data Structures', 'Algorithms'],
+    id: '1',
+    name: 'Charnchai Pluempitiwiriyawej',
+    department: 'Electrical Engineering',
+    avgRating: 0,
+    image: 'https://ee.eng.chula.ac.th/wp-content/uploads/2021/01/Charnchai.png',
+    courses: ['Probability and Statistics for Data Analysis', 'Advanced Mathematics Methods', 'Signals and Linear Systems'],
     },
     {
       id: '2',
-      name: 'Dr. David',
+      name: 'David Banjerdpongchai',
       department: 'Electrical Engineering',
-      avgRating: 4.2,
-      image: '',
-      courses: ['Thermodynamics', 'Statics'],
+      avgRating: 0,
+      image: 'https://ee.eng.chula.ac.th/wp-content/uploads/2021/02/72-1024x1536.jpg',
+      courses: ['Advanced Mathematics Methods'],
+    },
+    {
+      id: '3',
+      name: 'Peerapon Vateekul',
+      department: 'Computer Engineering',
+      avgRating: 0,
+      image: 'https://www.eng.chula.ac.th/wp-content/uploads/2022/05/IMG_1112-420x600.jpg',
+      courses: ['Computer Programming', 'Data Science']
+    },
+    {
+      id: '4',
+      name: 'Vishnu Kotrajaras',
+      department: 'Computer Engineering',
+      avgRating: 0,
+      image: 'http://mis.cp.eng.chula.ac.th/view.php?q=instructor/picture&key=10002101',
+      courses: ['Computer Programming', 'Fundamental Data Structure and Algorithm']
+    },
+    {
+      id: '5',
+      name: 'Chonlatep Usaku',
+      department: 'Chemical Engineering',
+      avgRating: 0,
+      image: 'https://chem.eng.chula.ac.th/wp-content/uploads/2024/01/Achonlatep.jpg',
+      courses: ['Exploring Engineering World']
     },
   ];
 
