@@ -1,22 +1,44 @@
-import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
-import Test from '../components/Test'
+import { View, Text, TouchableOpacity, FlatList, Image, StyleSheet } from 'react-native';
 
 export default function ProfessorList({ navigation }) {
   const professors = [
-    { id: '1', name: 'Dr. Charnchai', department: 'FUCK YOU1', course: [], avg_rating: 0, img: 'charnchai.jpeg' },
-    { id: '2', name: 'Dr. David', department: 'FUCK YOU2' },
-    { id: '3', name: 'Dr. Yan', department: 'FUCK YOU3' },
-    { id: '4', name: 'Dr. Panda', department: 'FUCK YOU4' },
-  ];
+  {
+    id: '1',
+    name: 'Dr. Charnchai',
+    department: 'Electrical Engineering',
+    avgRating: 0,
+    image: '',
+    courses: ['Data Structures', 'Algorithms'],
+  },
+  {
+    id: '2',
+    name: 'Dr. David',
+    department: 'Electrical Engineering',
+    avgRating: 4.2,
+    image: '',
+    courses: ['Thermodynamics', 'Statics'],
+  },
+];
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={() => navigation.navigate('ProfessorDetail', { professorId: item.id , name: item.name , department: item.department})}
-    >
+const renderItem = ({ item }) => (
+  <TouchableOpacity
+    style={styles.card}
+    onPress={() =>
+      navigation.navigate('ProfessorDetail', {
+        professorId: item.id,
+        name: item.name,
+        department: item.department,
+      })
+    }
+  >
+    <Image source={{ uri: item.image }} />
+    <View style={styles.info}>
       <Text style={styles.name}>{item.name}</Text>
-    </TouchableOpacity>
-  );
+      <Text >{item.department}</Text>
+      <Text >⭐ {item.avgRating}</Text>
+    </View>
+  </TouchableOpacity>
+);
 
   return (
     <View style={styles.container}>
