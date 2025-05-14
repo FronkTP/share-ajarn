@@ -20,7 +20,6 @@ export default function ProfessorList({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Test/>
       <Text style={styles.title}>Professor List</Text>
       <FlatList
         data={professors}
