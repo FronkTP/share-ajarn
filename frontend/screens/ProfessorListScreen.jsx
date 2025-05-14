@@ -1,6 +1,25 @@
 import { View, Text, TouchableOpacity, FlatList, Image, StyleSheet } from 'react-native';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useState, useEffect } from 'react';
 export default function ProfessorList({ navigation }) {
+
+  const [userName, setUserName] = useState('');
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const userData = await AsyncStorage.getItem('user');
+        if (userData) {
+          const user = JSON.parse(userData);
+          setUserName(user.name || '');
+        }
+      } catch (error) {
+        console.error('Failed to load user info:', error);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
   const professors = [
   {
     id: '1',
@@ -144,6 +163,7 @@ const renderItem = ({ item }) => (
 
   return (
     <View style={styles.container}>
+      {userName ? <Text style={styles.welcome}>Welcome, {userName}!</Text> : null}
       <Text style={styles.title}>Professor List</Text>
       <FlatList
         data={professors}
