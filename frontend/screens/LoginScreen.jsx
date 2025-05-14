@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 
 export default function LoginScreen({ navigation }) {
-  const [name, setName] = useState('');
-
   const handleLogin = () => {
     navigation.replace('ProfessorList');
   };
