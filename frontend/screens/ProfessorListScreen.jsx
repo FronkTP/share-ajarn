@@ -48,7 +48,7 @@ export default function ProfessorList({ navigation }) {
     department: 'ISE',
     avgRating: 0,
     image: 'http://www.ise.eng.chula.ac.th/images/Lecturer/resize/Dr._Sindhu_375_500.jpg',
-    courses: ['Introduction to ICE']
+    courses: ['Computer Programming', 'Introduction to ICE']
   },
   {
     id: '7',
@@ -110,6 +110,7 @@ export default function ProfessorList({ navigation }) {
     id: '14',
     name: 'Machigar Ongtang',
     department: 'Computer Engineering',
+    avgRating: 0,
     image: 'https://www.eng.chula.ac.th/wp-content/uploads/2024/06/05_0-420x600.png',
     courses: ['Application Development']
   },
@@ -117,8 +118,89 @@ export default function ProfessorList({ navigation }) {
     id: '15',
     name: 'Ekapol Chuangsuwanich',
     department: 'Computer Engineering',
+    avgRating: 0,
     image: 'https://scholar.googleusercontent.com/citations?view_op=medium_photo&user=ST-jPeYAAAAJ&citpid=2',
     courses: ['Artificial Intelligence']
+  },
+  {
+    id: '16',
+    name: 'Wasamon Jantai',
+    department: 'Mathematics and Computer Science',
+    avgRating: 0,
+    image: 'https://math.sc.chula.ac.th/wordpress/wp-content/uploads/2023/07/Wasamon-640x640-1.jpg',
+    courses: ['Calculus I', 'Calculus II']
+  },
+  {
+    id: '17',
+    name: 'Wutichai Chongchitmate',
+    department: 'Mathematics and Computer Science',
+    avgRating: 0,
+    image: 'https://math.sc.chula.ac.th/wordpress/wp-content/uploads/2019/05/wutichai-5.jpg',
+    courses: ['Calculus I']
+  },
+  {
+    id: '18',
+    name: 'Tuangrat Chaichana',
+    department: 'Mathematics and Computer Science',
+    avgRating: 0,
+    image: 'https://math.sc.chula.ac.th/wordpress/wp-content/uploads/2019/05/tuangrat_640x640-1-5.jpg',
+    courses: ['Calculus I', 'Calculus II']
+  },
+  {
+    id: '19',
+    name: 'Sujin Khomrutai',
+    department: 'Mathematics and Computer Science',
+    avgRating: 0,
+    image: 'https://math.sc.chula.ac.th/wordpress/wp-content/uploads/2019/05/Sujin-Khomrutai-1-5.jpg',
+    courses: ['Calculus I']
+  },
+  {
+    id: '20',
+    name: 'Pongdate Montagantirud',
+    department: 'Mathematics and Computer Science',
+    avgRating: 0,
+    image: 'https://math.sc.chula.ac.th/wordpress/wp-content/uploads/2019/05/Pongdate1.jpg',
+    courses: ['Calculus I', 'Calculus II']
+  },
+  {
+    id: '21',
+    name: 'Phantipa Thipwiwatpotjana',
+    department: 'Mathematics and Computer Science',
+    avgRating: 0,
+    image: 'https://math.sc.chula.ac.th/wordpress/wp-content/uploads/2019/05/Phantipa-Thipwiwatpotjana-1-5.jpg',
+    courses: ['Calculus I', 'Calculus II']
+  },
+  {
+    id: '22',
+    name: 'Chotiros Surapholchai',
+    department: 'Mathematics and Computer Science',
+    avgRating: 0,
+    image: 'https://math.sc.chula.ac.th/wordpress/wp-content/uploads/2019/05/Chotiros-Surapholchai-1-5.jpg',
+    courses: ['Calculus II']
+  },
+  {
+    id: '23',
+    name: 'Krung Sinapiromsaran',
+    department: 'Mathematics and Computer Science',
+    avgRating: 0,
+    image: 'https://math.sc.chula.ac.th/wordpress/wp-content/uploads/2019/05/Krung-Sinapiromsaran-1-5.jpg',
+    courses: ['Calculus II']
+  },
+  {
+    id: '24',
+    name: 'Chate Patanothai',
+    department: 'Computer Engineering',
+    avgRating: 0,
+    image: 'https://www.eng.chula.ac.th/wp-content/uploads/2017/01/405-420x600.jpg',
+    courses: ['Computer Programming']
+  },
+  {
+    id: '25',
+    name: 'Duangdao Wichadakul',
+    department: 'Computer Engineering',
+    avgRating: 0,
+    image: 'https://scholar.googleusercontent.com/citations?view_op=medium_photo&user=83zuL4QAAAAJ&citpid=1',
+    courses: ['Computer Programming']
   }
 ];
 
