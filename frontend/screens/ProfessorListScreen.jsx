@@ -3,7 +3,7 @@ import Test from '../components/Test'
 
 export default function ProfessorList({ navigation }) {
   const professors = [
-    { id: '1', name: 'Dr. Charnchai', department: 'FUCK YOU1' },
+    { id: '1', name: 'Dr. Charnchai', department: 'FUCK YOU1', course: [], avg_rating: 0, img: 'charnchai.jpeg' },
     { id: '2', name: 'Dr. David', department: 'FUCK YOU2' },
     { id: '3', name: 'Dr. Yan', department: 'FUCK YOU3' },
     { id: '4', name: 'Dr. Panda', department: 'FUCK YOU4' },
