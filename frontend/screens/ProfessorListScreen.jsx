@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, FlatList, Image, Dimensions, SafeAreaView, StyleSheet } from 'react-native';
-import professors from '../data/professors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useState, useEffect } from 'react';
+import baseProfessors from '../data/baseProfessors';
 
 const colors = {
   background: '#fffcf2',
@@ -15,11 +16,109 @@ const colors = {
 };
 
 export default function ProfessorList({ navigation }) {
+  const [userName, setUserName] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [professors, setProfessors] = useState([]);
+
   const [screenWidth, setScreenWidth] = useState(Dimensions.get('window').width);
-  
+  const cardWidth = 200;
+  const numColumns = Math.max(1, Math.floor(screenWidth / cardWidth));
+  const isMobile = screenWidth < 400;
+
+  const logout = async () => {
+  await AsyncStorage.removeItem('user');
+  navigation.replace('Login'); // or navigation.reset() if you want to clear stack
+};
+
   useEffect(() => {
-    const updateLayout = () => {
-      setScreenWidth(Dimensions.get('window').width);
+    const fetchUserInfo = async () => {
+      try {
+        const userData = await AsyncStorage.getItem('user');
+        if (userData) {
+          const user = JSON.parse(userData);
+          setUserName(user.name || '')
+
+        if (user.email) {
+          await checkAdminStatus(user.email);
+        }
+        }
+      } catch (error) {
+        console.error('Failed to load user info:', error);
+      }
+    };
+
+    fetchUserInfo();
+    }, []);
+
+  useEffect(() => {
+    const fetchRatings = async () => {
+      const updatedProfessors = await Promise.all(
+        baseProfessors.map(async (prof) => {
+          const avgRating = await fetchRating(prof.id);
+          return { ...prof, avgRating };
+        })
+      );
+      setProfessors(updatedProfessors);
+    };
+
+    fetchRatings();
+  }, []);
+
+  const fetchRating = async (professorId) => {
+  try {
+    const response = await fetch(`http://127.0.0.1:5000/get_reviews/${professorId}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const reviews = await response.json();
+    if (!Array.isArray(reviews) || reviews.length === 0) return 0;
+
+    const total = reviews.reduce((sum, review) => sum + (review.stars || 0), 0);
+    return (total / reviews.length).toFixed(1);
+  } catch (error) {
+    console.error("Failed to fetch rating for professor", professorId, error);
+    return 0;
+  }
+  };
+  
+  const checkAdminStatus = async (email) => {
+    try {
+      const response = await fetch('http://127.0.0.1:5000/api/get_user_info', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+      console.log("data after response:", data);
+
+      if (data.user && Array.isArray(data.user)) {
+        const [id, name, isAdminRaw] = data.user;
+
+        const userInfo = {
+          id,
+          name,
+          email,
+          isAdmin: isAdminRaw === 1,
+        };
+
+        console.log("after put in userInfo", userInfo);
+
+        setUserName(name);
+        setIsAdmin(userInfo.isAdmin);
+        await AsyncStorage.setItem('user', JSON.stringify(userInfo));
+      } else {
+        console.warn('Invalid user data:', data);
+      }
+    } catch (error) {
+      console.error('Failed to check admin status:', error);
+    }
+  };
+
+    useEffect(() => {
+      const updateLayout = () => {
+        setScreenWidth(Dimensions.get('window').width);
     };
     
     Dimensions.addEventListener('change', updateLayout);
@@ -31,10 +130,6 @@ export default function ProfessorList({ navigation }) {
       }
     };
   }, []);
-
-  const cardWidth = 200;
-  const numColumns = Math.max(1, Math.floor(screenWidth / cardWidth));
-  const isMobile = screenWidth < 400;
 
   const renderProfessorCard = ({ item }) => {
     // Mobile optimized layout
@@ -98,16 +193,32 @@ export default function ProfessorList({ navigation }) {
 
   return (
     <SafeAreaView style={[styles.container, isMobile ? null : { alignItems: 'center' }]}>
-      <Text style={styles.title}>Professor List</Text>
-      <FlatList
-        data={professors}
-        keyExtractor={(item) => item.id}
-        renderItem={renderProfessorCard}
-        numColumns={numColumns}
-        key={numColumns}
-        contentContainerStyle={styles.listContainer}
-        showsVerticalScrollIndicator={false}
-      />
+      <View style={styles.container}>
+        {userName ? <Text style={styles.welcome}>Welcome, {userName}!</Text> : null}
+        <TouchableOpacity onPress={logout} style={styles.logoutButton}>
+        <Text style={styles.logoutText}>Logout</Text>
+        </TouchableOpacity>
+        {isAdmin && (
+          <TouchableOpacity
+            style={styles.adminButton}
+            onPress={() => navigation.navigate('AdminDashboard')}
+          >
+            <Text style={styles.adminButtonText}>Go to Admin Dashboard</Text>
+          </TouchableOpacity>
+        )}
+
+        <Text style={styles.title}>Professor List</Text>
+
+        <FlatList
+          data={professors}
+          keyExtractor={(item) => item.id}
+          renderItem={renderProfessorCard}
+          numColumns={numColumns}
+          key={numColumns}
+          contentContainerStyle={styles.listContainer}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
     </SafeAreaView>
   );
 }
@@ -197,5 +308,27 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     color: colors.primary,
+  },
+  adminButton: {
+    backgroundColor: '#007bff',
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  adminButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  logoutButton: {
+    backgroundColor: '#A31D1D',
+    padding: 10,
+    borderRadius: 8,
+    alignSelf: 'flex-end',
+    margin: 10,
+  },
+  logoutText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });

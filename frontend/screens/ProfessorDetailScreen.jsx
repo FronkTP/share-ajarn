@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image, ScrollView, SafeAreaView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, SafeAreaView } from 'react-native';
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -16,6 +16,7 @@ const colors = {
 
 export default function ProfessorDetailScreen({ route, navigation }) {
   const { professorId, name, department, avgRating, image, courses } = route.params;
+  const [reviews, setReviews] = useState([]);
 
   const [reviews, setReviews] = useState([
     { id: '1', course: 'Prob Stat', stars: 1, comment: 'His teaching is too bad. The exams are too difficult.' },
@@ -38,6 +39,18 @@ export default function ProfessorDetailScreen({ route, navigation }) {
     } catch (error) {
       console.error('Fetch error:', error);
     }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchReviews();
+    }, [professorId])
+  );
+
+  const getAverageRating = () => {
+    if (reviews.length === 0) return avgRating || 0;
+    const totalStars = reviews.reduce((sum, review) => sum + review.stars, 0);
+    return (totalStars / reviews.length).toFixed(1);
   };
 
   const renderStar = (index, filled) => (
@@ -88,11 +101,11 @@ export default function ProfessorDetailScreen({ route, navigation }) {
           <View style={styles.ratingSection}>
             <Text style={styles.sectionTitle}>Rating</Text>
             <View style={styles.ratingContainer}>
-              <Text style={styles.ratingText}>{avgRating ? avgRating.toFixed(1) : '0.0'}</Text>
-              {renderStars(Math.round(avgRating || 0))}
+              <Text style={styles.ratingText}>{getAverageRating()}</Text>
+              {renderStars(Math.round(parseFloat(getAverageRating())))}
             </View>
           </View>
-          
+
           <TouchableOpacity 
             style={styles.rateButton}
             onPress={() => navigation.navigate('AddReview', { professorId })}
