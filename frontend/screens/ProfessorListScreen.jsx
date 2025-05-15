@@ -40,6 +40,11 @@ export default function ProfessorList({ navigation }) {
   const numColumns = Math.max(1, Math.floor(screenWidth / cardWidth));
   const isMobile = screenWidth < 400;
 
+  const logout = async () => {
+  await AsyncStorage.removeItem('user');
+  navigation.replace('Login'); // or navigation.reset() if you want to clear stack
+};
+
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
@@ -85,7 +90,7 @@ export default function ProfessorList({ navigation }) {
     if (!Array.isArray(reviews) || reviews.length === 0) return 0;
 
     const total = reviews.reduce((sum, review) => sum + (review.stars || 0), 0);
-    return (total / reviews.length).toFixed(1); // 1 decimal
+    return (total / reviews.length).toFixed(1);
   } catch (error) {
     console.error("Failed to fetch rating for professor", professorId, error);
     return 0;
@@ -116,7 +121,7 @@ export default function ProfessorList({ navigation }) {
         console.log("after put in userInfo", userInfo);
 
         setUserName(name);
-        setIsAdmin(userInfo.isAdmin); // ✅ update state
+        setIsAdmin(userInfo.isAdmin);
         await AsyncStorage.setItem('user', JSON.stringify(userInfo));
       } else {
         console.warn('Invalid user data:', data);
@@ -125,11 +130,10 @@ export default function ProfessorList({ navigation }) {
       console.error('Failed to check admin status:', error);
     }
   };
-  console.log(isAdmin)
 
     useEffect(() => {
-    const updateLayout = () => {
-      setScreenWidth(Dimensions.get('window').width);
+      const updateLayout = () => {
+        setScreenWidth(Dimensions.get('window').width);
     };
     
     Dimensions.addEventListener('change', updateLayout);
@@ -206,7 +210,9 @@ export default function ProfessorList({ navigation }) {
     <SafeAreaView style={[styles.container, isMobile ? null : { alignItems: 'center' }]}>
       <View style={styles.container}>
         {userName ? <Text style={styles.welcome}>Welcome, {userName}!</Text> : null}
-
+        <TouchableOpacity onPress={logout} style={styles.logoutButton}>
+        <Text style={styles.logoutText}>Logout</Text>
+        </TouchableOpacity>
         {isAdmin && (
           <TouchableOpacity
             style={styles.adminButton}
@@ -279,6 +285,68 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     color: colors.primary,
+  },
+  searchBarContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 16,
+    marginBottom: 20,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    borderColor: colors.border,
+    borderWidth: 1,
+    paddingHorizontal: 10,
+  },
+  searchBar: {
+    marginHorizontal: 16,
+    marginBottom: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    borderColor: colors.border,
+    borderWidth: 1,
+    fontSize: 16,
+    color: colors.textPrimary,
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchBarInput: {
+    flex: 1,
+    fontSize: 16,
+    paddingVertical: 10,
+    color: colors.textPrimary,
+  },
+  filterContainer: {
+    marginHorizontal: 16,
+    marginBottom: 20,
+  },
+  filterLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: colors.textPrimary,
+    marginBottom: 8,
+  },
+  ratingButtons: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  ratingButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    backgroundColor: '#ddd',
+    borderRadius: 8,
+    marginRight: 10,
+    marginBottom: 6,
+  },
+  ratingButtonActive: {
+    backgroundColor: colors.primary,
+  },
+  ratingButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
   // Tablet/desktop card style
   card: {    
@@ -360,69 +428,15 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
-  searchBar: {
-    marginHorizontal: 16,
-    marginBottom: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    backgroundColor: '#fff',
+  logoutButton: {
+    backgroundColor: '#A31D1D',
+    padding: 10,
     borderRadius: 8,
-    borderColor: colors.border,
-    borderWidth: 1,
-    fontSize: 16,
-    color: colors.textPrimary,
+    alignSelf: 'flex-end',
+    margin: 10,
   },
-  filterContainer: {
-    marginHorizontal: 16,
-    marginBottom: 20,
-  },
-  filterLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: colors.textPrimary,
-    marginBottom: 8,
-  },
-  ratingButtons: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  ratingButton: {
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    backgroundColor: '#ddd',
-    borderRadius: 8,
-    marginRight: 10,
-    marginBottom: 6,
-  },
-  ratingButtonActive: {
-    backgroundColor: colors.primary,
-  },
-  ratingButtonText: {
-    color: '#fff',
+  logoutText: {
+    color: 'white',
     fontWeight: 'bold',
   },
-  searchBarContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginHorizontal: 16,
-    marginBottom: 20,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    borderColor: colors.border,
-    borderWidth: 1,
-    paddingHorizontal: 10,
-  },
-
-  searchIcon: {
-    marginRight: 8,
-  },
-
-  searchBarInput: {
-    flex: 1,
-    fontSize: 16,
-    paddingVertical: 10,
-    color: colors.textPrimary,
-  },
-
 });

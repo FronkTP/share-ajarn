@@ -1,11 +1,32 @@
-import { View, Text, Button, StyleSheet, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, SafeAreaView } from 'react-native';
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 
+const colors = {
+  background: '#fffcf2',
+  cardBackground: '#ffffff',
+  primary: '#6D2323',
+  secondary: '#A31D1D',
+  accent: '#E5D0AC',
+  textPrimary: '#333333',
+  textSecondary: '#555555',
+  border: '#e0e0e0',
+  shadow: '#000000',
+};
+
 export default function ProfessorDetailScreen({ route, navigation }) {
-  const { professorId, name, department } = route.params;
+  const { professorId, name, department, avgRating, image, courses } = route.params;
   const [reviews, setReviews] = useState([]);
 
+  const [reviews, setReviews] = useState([
+    { id: '1', course: 'Prob Stat', stars: 1, comment: 'His teaching is too bad. The exams are too difficult.' },
+    { id: '2', course: 'Signal', stars: 4, comment: 'Good teaching but a little bit too much of homework.' },
+    { id: '3', course: 'Advanced Math', stars: 5, comment: 'Excellent professor! Clear explanations and fair exams. Always available during office hours to help students.' },
+    { id: '4', course: 'Digital Logic', stars: 2, comment: 'Lectures are confusing and the homework doesn\'t prepare you for the exams. Not recommended.' },
+    { id: '5', course: 'Machine Learning', stars: 3, comment: 'Average teaching. The material is interesting but presentation could be better. Assignments are reasonable though.' },
+  ]);
+  
+  // For future API integration
   const fetchReviews = async () => {
     try {
       const response = await fetch(`http://127.0.0.1:5000/get_reviews/${professorId}`);
@@ -25,68 +46,236 @@ export default function ProfessorDetailScreen({ route, navigation }) {
       fetchReviews();
     }, [professorId])
   );
-  const getAverageRating = () => {
-  if (reviews.length === 0) return 0;
-  const totalStars = reviews.reduce((sum, review) => sum + review.stars, 0);
-  return (totalStars / reviews.length).toFixed(1); // one decimal place
-};
 
-  const renderReview = ({ item }) => (
-    <View style={styles.reviewCard}>
-      <Text style={styles.reviewCourse}>Course: {item.course}</Text>
-      <Text>Stars: {item.stars}</Text>
-      <Text>Comment: {item.comment || 'No comment'}</Text>
-    </View>
+  const getAverageRating = () => {
+    if (reviews.length === 0) return avgRating || 0;
+    const totalStars = reviews.reduce((sum, review) => sum + review.stars, 0);
+    return (totalStars / reviews.length).toFixed(1);
+  };
+
+  const renderStar = (index, filled) => (
+    <Text key={index} style={styles.star}>
+      {filled ? '★' : '☆'}
+    </Text>
   );
 
+  const renderStars = (count, max = 5) => {
+    const stars = [];
+    for (let i = 0; i < max; i++) {
+      stars.push(renderStar(i, i < count));
+    }
+    return <View style={styles.starContainer}>{stars}</View>;
+  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{name}</Text>
-      <Text>Department: {department}</Text>
-      <Text>Average Rating: {getAverageRating()}</Text>
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.profileSection}>
+          <View style={styles.profileHeader}>
+            {image ? (
+              <Image 
+                source={{ uri: image }} 
+                style={styles.profileImage}
+              />
+            ) : (
+              <View style={styles.profileImagePlaceholderContainer}>
+                <Text style={styles.profileImagePlaceholder}>😐</Text>
+              </View>
+            )}
+            
+            <View style={styles.nameSection}>
+              <Text style={styles.profileName}>{name}</Text>
+              <Text style={styles.profileDepartment}>{department}</Text>
+            </View>
+          </View>
+          
+          <View style={styles.infoSection}>
+            <Text style={styles.sectionTitle}>Courses</Text>
+            <Text style={styles.profileCourses}>
+              {courses ? 
+                (Array.isArray(courses) ? courses.join(', ') : courses) : 
+                'No courses yet'}
+            </Text>
+          </View>
+          
+          <View style={styles.ratingSection}>
+            <Text style={styles.sectionTitle}>Rating</Text>
+            <View style={styles.ratingContainer}>
+              <Text style={styles.ratingText}>{getAverageRating()}</Text>
+              {renderStars(Math.round(parseFloat(getAverageRating())))}
+            </View>
+          </View>
 
-      <Button
-        title="Rate This Professor"
-        onPress={() => navigation.navigate('AddReview', { professorId })}
-      />
-      <Text style={styles.reviewTitle}>Reviews:</Text>
-      <FlatList
-        data={reviews}
-        keyExtractor={(_, index) => index.toString()}
-        renderItem={renderReview}
-      />
-
-    </View>
-
+          <TouchableOpacity 
+            style={styles.rateButton}
+            onPress={() => navigation.navigate('AddReview', { professorId })}
+          >
+            <Text style={styles.rateButtonText}>Rate this professor</Text>
+          </TouchableOpacity>
+        </View>
+        
+        <View style={styles.reviewsContainer}>
+          <Text style={styles.reviewsTitle}>Reviews ({reviews.length})</Text>
+          
+          {reviews.map((item, index) => (
+            <View key={`review-${index}`} style={styles.reviewCard}>
+              <View style={styles.reviewHeader}>
+                <Text style={styles.reviewScore}>{item.stars}/5</Text>
+                <Text style={styles.reviewCourse}>Course: {item.course}</Text>
+              </View>
+              <View style={styles.starsRow}>
+                {renderStars(item.stars)}
+              </View>
+              <Text style={styles.reviewComment}>{item.comment || 'No comment'}</Text>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    justifyContent: 'center',
-    alignItems: 'flex-start',
+    backgroundColor: colors.background,
   },
-    title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  scrollView: {
+    flex: 1,
+  },
+  profileSection: {
+    backgroundColor: colors.cardBackground,
+    padding: 20,
+    marginBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  profileHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 20,
   },
-    reviewTitle: {
-    marginTop: 20,
-    fontSize: 18,
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginRight: 15,
+  },
+  profileImagePlaceholderContainer: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: colors.accent,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+  },
+  profileImagePlaceholder: {
+    fontSize: 40,
+  },
+  nameSection: {
+    flex: 1,
+  },
+  profileName: {
+    fontSize: 22,
     fontWeight: 'bold',
+    marginBottom: 4,
+    color: colors.primary,
+  },
+  profileDepartment: {
+    fontSize: 16,
+    color: colors.textSecondary,
+  },
+  infoSection: {
+    marginBottom: 15,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 8,
+    color: colors.primary,
+  },
+  profileCourses: {
+    fontSize: 15,
+    lineHeight: 22,
+    color: colors.textPrimary,
+  },
+  ratingSection: {
+    marginBottom: 20,
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  ratingText: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginRight: 10,
+    color: colors.secondary,
+  },
+  starContainer: {
+    flexDirection: 'row',
+  },
+  star: {
+    fontSize: 22,
+    color: colors.secondary,
+    marginRight: 2,
+  },
+  rateButton: {
+    backgroundColor: colors.primary,
+    borderRadius: 25,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  rateButtonText: {
+    fontSize: 16,
+    color: colors.cardBackground,
+    fontWeight: '600',
+  },
+  reviewsContainer: {
+    padding: 20,
+  },
+  reviewsTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    color: colors.primary,
   },
   reviewCard: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 10,
-    marginTop: 10,
+    backgroundColor: colors.cardBackground,
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 15,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  reviewHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  reviewScore: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginRight: 12,
+    minWidth: 40,
+    color: colors.secondary,
   },
   reviewCourse: {
-    fontWeight: 'bold',
+    fontSize: 16,
+    color: colors.textSecondary,
   },
+  starsRow: {
+    flexDirection: 'row',
+    marginBottom: 10,
+  },
+  reviewComment: {
+    fontSize: 15,
+    lineHeight: 22,
+    color: colors.textPrimary,
+  }
 });
