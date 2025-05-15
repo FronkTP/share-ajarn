@@ -25,6 +25,11 @@ export default function ProfessorDetailScreen({ route, navigation }) {
       fetchReviews();
     }, [professorId])
   );
+  const getAverageRating = () => {
+  if (reviews.length === 0) return 0;
+  const totalStars = reviews.reduce((sum, review) => sum + review.stars, 0);
+  return (totalStars / reviews.length).toFixed(1); // one decimal place
+};
 
   const renderReview = ({ item }) => (
     <View style={styles.reviewCard}>
@@ -39,7 +44,7 @@ export default function ProfessorDetailScreen({ route, navigation }) {
     <View style={styles.container}>
       <Text style={styles.title}>{name}</Text>
       <Text>Department: {department}</Text>
-      <Text>Average Rating: 4.3</Text>
+      <Text>Average Rating: {getAverageRating()}</Text>
 
       <Button
         title="Rate This Professor"

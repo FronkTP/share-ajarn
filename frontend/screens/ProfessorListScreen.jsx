@@ -5,6 +5,7 @@ export default function ProfessorList({ navigation }) {
 
   const [userName, setUserName] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
+  const [professors, setProfessors] = useState([]);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -25,6 +26,38 @@ export default function ProfessorList({ navigation }) {
 
     fetchUserInfo();
     }, []);
+
+  useEffect(() => {
+    const fetchRatings = async () => {
+      const updatedProfessors = await Promise.all(
+        baseProfessors.map(async (prof) => {
+          const avgRating = await fetchRating(prof.id);
+          return { ...prof, avgRating };
+        })
+      );
+      setProfessors(updatedProfessors);
+    };
+
+    fetchRatings();
+  }, []);
+
+    const fetchRating = async (professorId) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/get_reviews/${professorId}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const reviews = await response.json();
+      if (!Array.isArray(reviews) || reviews.length === 0) return 0;
+
+      const total = reviews.reduce((sum, review) => sum + (review.stars || 0), 0);
+      return (total / reviews.length).toFixed(1); // 1 decimal
+    } catch (error) {
+      console.error("Failed to fetch rating for professor", professorId, error);
+      return 0;
+    }
+  };
   
   const checkAdminStatus = async (email) => {
     try {
@@ -60,7 +93,7 @@ export default function ProfessorList({ navigation }) {
     }
   };
   console.log(isAdmin)
-  const professors = [
+  const baseProfessors = [
   {
     id: '1',
     name: 'Charnchai Pluempitiwiriyawej',
@@ -276,7 +309,7 @@ const renderItem = ({ item }) => (
     <View style={styles.info}>
       <Text style={styles.name}>{item.name}</Text>
       <Text >{item.department}</Text>
-      <Text >⭐ {item.avgRating}</Text>
+      <Text >⭐ {item.avgRating === 0 ? '-' : item.avgRating}</Text>
     </View>
   </TouchableOpacity>
 );
