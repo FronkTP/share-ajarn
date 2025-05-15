@@ -1,11 +1,11 @@
 const professors = [
 {
-id: '1',
-name: 'Charnchai Pluempitiwiriyawej',
-department: 'Electrical Engineering',
-avgRating: 0,
-image: 'https://ee.eng.chula.ac.th/wp-content/uploads/2021/01/Charnchai.png',
-courses: ['Probability and Statistics for Data Analysis', 'Advanced Mathematics Methods', 'Signals and Linear Systems'],
+    id: '1',
+    name: 'Charnchai Pluempitiwiriyawej',
+    department: 'Electrical Engineering',
+    avgRating: 0,
+    image: 'https://ee.eng.chula.ac.th/wp-content/uploads/2021/01/Charnchai.png',
+    courses: ['Probability and Statistics for Data Analysis', 'Advanced Mathematics Methods', 'Signals and Linear Systems'],
 },
 {
     id: '2',
