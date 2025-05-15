@@ -1,7 +1,9 @@
-import { View, Text, TouchableOpacity, FlatList, Image, Dimensions, SafeAreaView, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, Image, Dimensions, SafeAreaView, StyleSheet, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect } from 'react';
 import baseProfessors from '../data/baseProfessors';
+import Icon from 'react-native-vector-icons/FontAwesome'; // or Ionicons, MaterialIcons, etc.
+
 
 const colors = {
   background: '#fffcf2',
@@ -19,6 +21,19 @@ export default function ProfessorList({ navigation }) {
   const [userName, setUserName] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
   const [professors, setProfessors] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [minRating, setMinRating] = useState(0); // Default: show all
+
+  const filteredProfessors = professors.filter((prof) => {
+  const matchesSearch =
+    prof.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    prof.department.toLowerCase().includes(searchQuery.toLowerCase());
+
+  const matchesRating = parseFloat(prof.avgRating) >= minRating;
+
+  return matchesSearch && matchesRating;
+});
+
 
   const [screenWidth, setScreenWidth] = useState(Dimensions.get('window').width);
   const cardWidth = 200;
@@ -203,8 +218,39 @@ export default function ProfessorList({ navigation }) {
 
         <Text style={styles.title}>Professor List</Text>
 
+        <View style={styles.searchBarContainer}>
+          <Icon name="search" size={18} color={colors.textSecondary} style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchBarInput}
+            placeholder="Search professor's name / department"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholderTextColor={colors.textSecondary}
+          />
+        </View>
+
+
+        <View style={styles.filterContainer}>
+          <Text style={styles.filterLabel}>Filter by Rating:</Text>
+          <View style={styles.ratingButtons}>
+            {[1, 2, 3, 4, 5].map((rating) => (
+              <TouchableOpacity
+                key={rating}
+                style={[
+                  styles.ratingButton,
+                  minRating === rating && styles.ratingButtonActive,
+                ]}
+                onPress={() => setMinRating(minRating === rating ? 0 : rating)}
+              >
+                <Text style={styles.ratingButtonText}>{rating}+</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+
         <FlatList
-          data={professors}
+          data={filteredProfessors}
           keyExtractor={(item) => item.id}
           renderItem={renderProfessorCard}
           numColumns={numColumns}
@@ -314,4 +360,69 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
+  searchBar: {
+    marginHorizontal: 16,
+    marginBottom: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    borderColor: colors.border,
+    borderWidth: 1,
+    fontSize: 16,
+    color: colors.textPrimary,
+  },
+  filterContainer: {
+    marginHorizontal: 16,
+    marginBottom: 20,
+  },
+  filterLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: colors.textPrimary,
+    marginBottom: 8,
+  },
+  ratingButtons: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  ratingButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    backgroundColor: '#ddd',
+    borderRadius: 8,
+    marginRight: 10,
+    marginBottom: 6,
+  },
+  ratingButtonActive: {
+    backgroundColor: colors.primary,
+  },
+  ratingButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  searchBarContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 16,
+    marginBottom: 20,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    borderColor: colors.border,
+    borderWidth: 1,
+    paddingHorizontal: 10,
+  },
+
+  searchIcon: {
+    marginRight: 8,
+  },
+
+  searchBarInput: {
+    flex: 1,
+    fontSize: 16,
+    paddingVertical: 10,
+    color: colors.textPrimary,
+  },
+
 });
