@@ -18,6 +18,15 @@ export default function ProfessorDetailScreen({ route, navigation }) {
   const { professorId, name, department, avgRating, image, courses } = route.params;
   const [reviews, setReviews] = useState([]);
 
+  const [reviews, setReviews] = useState([
+    { id: '1', course: 'Prob Stat', stars: 1, comment: 'His teaching is too bad. The exams are too difficult.' },
+    { id: '2', course: 'Signal', stars: 4, comment: 'Good teaching but a little bit too much of homework.' },
+    { id: '3', course: 'Advanced Math', stars: 5, comment: 'Excellent professor! Clear explanations and fair exams. Always available during office hours to help students.' },
+    { id: '4', course: 'Digital Logic', stars: 2, comment: 'Lectures are confusing and the homework doesn\'t prepare you for the exams. Not recommended.' },
+    { id: '5', course: 'Machine Learning', stars: 3, comment: 'Average teaching. The material is interesting but presentation could be better. Assignments are reasonable though.' },
+  ]);
+  
+  // For future API integration
   const fetchReviews = async () => {
     try {
       const response = await fetch(`http://127.0.0.1:5000/get_reviews/${professorId}`);
@@ -49,6 +58,7 @@ export default function ProfessorDetailScreen({ route, navigation }) {
       {filled ? '★' : '☆'}
     </Text>
   );
+
   const renderStars = (count, max = 5) => {
     const stars = [];
     for (let i = 0; i < max; i++) {
@@ -217,7 +227,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 20,
     alignItems: 'center',
-    marginTop: 5,
   },
   rateButtonText: {
     fontSize: 16,

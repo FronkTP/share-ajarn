@@ -75,7 +75,7 @@ export default function ProfessorList({ navigation }) {
     if (!Array.isArray(reviews) || reviews.length === 0) return 0;
 
     const total = reviews.reduce((sum, review) => sum + (review.stars || 0), 0);
-    return (total / reviews.length).toFixed(1); // 1 decimal
+    return (total / reviews.length).toFixed(1);
   } catch (error) {
     console.error("Failed to fetch rating for professor", professorId, error);
     return 0;
@@ -106,7 +106,7 @@ export default function ProfessorList({ navigation }) {
         console.log("after put in userInfo", userInfo);
 
         setUserName(name);
-        setIsAdmin(userInfo.isAdmin); // ✅ update state
+        setIsAdmin(userInfo.isAdmin);
         await AsyncStorage.setItem('user', JSON.stringify(userInfo));
       } else {
         console.warn('Invalid user data:', data);
@@ -115,11 +115,10 @@ export default function ProfessorList({ navigation }) {
       console.error('Failed to check admin status:', error);
     }
   };
-  console.log(isAdmin)
 
     useEffect(() => {
-    const updateLayout = () => {
-      setScreenWidth(Dimensions.get('window').width);
+      const updateLayout = () => {
+        setScreenWidth(Dimensions.get('window').width);
     };
     
     Dimensions.addEventListener('change', updateLayout);
@@ -322,14 +321,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   logoutButton: {
-  backgroundColor: '#A31D1D',
-  padding: 10,
-  borderRadius: 8,
-  alignSelf: 'flex-end',
-  margin: 10,
-},
-logoutText: {
-  color: 'white',
-  fontWeight: 'bold',
-},
+    backgroundColor: '#A31D1D',
+    padding: 10,
+    borderRadius: 8,
+    alignSelf: 'flex-end',
+    margin: 10,
+  },
+  logoutText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
 });
