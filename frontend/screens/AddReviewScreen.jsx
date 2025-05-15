@@ -43,23 +43,25 @@ const handleSubmit = async () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Add a Review</Text>
-    <View style={styles.input}>
-  <Text>Course Name</Text>
+    
+    <View style={styles.pickerContainer}>
+  <Text style={styles.label}>Course Name</Text>
   <Picker
     selectedValue={course}
-    onValueChange={(itemValue, itemIndex) => setCourse(itemValue)}
-    style={{ height: 50, width: '100%' }}
+    onValueChange={(itemValue) => setCourse(itemValue)}
+    style={styles.picker}
+    dropdownIconColor="#A31D1D"
   >
     <Picker.Item label="Select a course" value="" />
     <Picker.Item label="CS101 - Intro to CS" value="CS101" />
     <Picker.Item label="MATH201 - Calculus II" value="MATH201" />
     <Picker.Item label="ENG102 - English Lit" value="ENG102" />
-    {/* Add more courses here as needed */}
   </Picker>
 </View>
 
+
     <View style={styles.input}>
-    <Text>Rating</Text>
+    <Text style={styles.label}>Rating</Text>
     <Stars
       default={0}
       update={(val)=> setStars(val)}
@@ -77,7 +79,7 @@ const handleSubmit = async () => {
         onChangeText={setComment}
     />
 
-    <Button title="Submit Review" onPress={handleSubmit} />
+    <Button title="Submit Review" onPress={handleSubmit} color="#6D2323" />
     </View>
   );
 }
@@ -87,18 +89,42 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: 'flex-start',
+    backgroundColor: '#FFFCF2',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: '#6D2323',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#E5D0AC',
     borderRadius: 5,
     padding: 10,
     marginBottom: 15,
     width: '100%',
+    backgroundColor: '#FFF',
+    color: '#6D2323',
+  },
+  label: {
+    marginBottom: 5,
+    color: '#A31D1D',
+    fontWeight: '500',
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: '#E5D0AC',
+    borderRadius: 5,
+    marginBottom: 15,
+    backgroundColor: '#FFF',
+    overflow: 'hidden',
+  },
+  picker: {
+    color: '#6D2323',
+    paddingHorizontal: 10,
+    height: 40,
+    width: '100%',
   },
 });
+
