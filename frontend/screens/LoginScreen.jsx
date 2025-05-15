@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import * as Google from "expo-auth-session/providers/google"
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { CLIENT_ID } from '@env';
+import { CLIENT_ID, ADMIN_GMAIL } from '@env';
 import * as WebBrowser from 'expo-web-browser';
 
 WebBrowser.maybeCompleteAuthSession(); // Required for auth flow to complete
@@ -30,7 +30,7 @@ const fetchUserInfo = async (token) => {
     await AsyncStorage.setItem("user", JSON.stringify(user));
 
     // Check if this is the admin email
-    const isAdmin = user.email === "guyparnchinda@gmail.com";
+    const isAdmin = user.email === ADMIN_GMAIL;
 
     // Send to backend
     await fetch("http://127.0.0.1:5000/login", {
