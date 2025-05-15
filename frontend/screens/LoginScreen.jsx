@@ -42,7 +42,10 @@ const fetchUserInfo = async (token) => {
         isAdmin: isAdmin,
       }),
     });
-  navigation.replace("ProfessorList");
+  navigation.reset({
+  index: 0,
+  routes: [{ name: 'ProfessorList' }],
+});
   } catch (error) {
     console.error("Error fetching user info:", error);
   }

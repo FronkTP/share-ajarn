@@ -25,6 +25,11 @@ export default function ProfessorList({ navigation }) {
   const numColumns = Math.max(1, Math.floor(screenWidth / cardWidth));
   const isMobile = screenWidth < 400;
 
+  const logout = async () => {
+  await AsyncStorage.removeItem('user');
+  navigation.replace('Login'); // or navigation.reset() if you want to clear stack
+};
+
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
@@ -191,7 +196,9 @@ export default function ProfessorList({ navigation }) {
     <SafeAreaView style={[styles.container, isMobile ? null : { alignItems: 'center' }]}>
       <View style={styles.container}>
         {userName ? <Text style={styles.welcome}>Welcome, {userName}!</Text> : null}
-
+        <TouchableOpacity onPress={logout} style={styles.logoutButton}>
+        <Text style={styles.logoutText}>Logout</Text>
+        </TouchableOpacity>
         {isAdmin && (
           <TouchableOpacity
             style={styles.adminButton}
@@ -314,4 +321,15 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
+  logoutButton: {
+  backgroundColor: '#A31D1D',
+  padding: 10,
+  borderRadius: 8,
+  alignSelf: 'flex-end',
+  margin: 10,
+},
+logoutText: {
+  color: 'white',
+  fontWeight: 'bold',
+},
 });
