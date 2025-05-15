@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 
 export default function ProfessorDetailScreen({ route, navigation }) {
-  const { professorId, name, department } = route.params;
+  const { professorId, name, department, avgRating, image, courses } = route.params;
   const [reviews, setReviews] = useState([]);
 
   const fetchReviews = async () => {

@@ -47,6 +47,9 @@ export default function ProfessorList({ navigation }) {
               professorId: item.id,
               name: item.name,
               department: item.department,
+              avgRating: item.avgRating,
+              image: item.image,
+              courses: item.courses
             })
           }
         >
@@ -74,6 +77,9 @@ export default function ProfessorList({ navigation }) {
             professorId: item.id,
             name: item.name,
             department: item.department,
+            avgRating: item.avgRating,
+            image: item.image,
+            courses: item.courses
           })
         }
       >
@@ -84,8 +90,7 @@ export default function ProfessorList({ navigation }) {
         <View style={styles.info}>
           <Text style={styles.name} numberOfLines={1} ellipsizeMode="tail">{item.name}</Text>
           <Text style={styles.department} numberOfLines={1} ellipsizeMode="tail">{item.department}</Text>
-          <Text style={styles.rating}>⭐ {item.avgRating === 0 ? "-" : item.avgRating} / 5.0
-          </Text>
+          <Text style={styles.rating}>⭐ {item.avgRating === 0 ? "-" : item.avgRating} / 5.0</Text>
         </View>
       </TouchableOpacity>
     );
