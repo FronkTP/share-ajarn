@@ -20,32 +20,33 @@ export default function LoginScreen({ navigation }) {
     }
   }, [response]);
 
-  const fetchUserInfo = async (token) => {
-    try {
-      const res = await fetch("https://www.googleapis.com/userinfo/v2/me", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const user = await res.json();
-      setUserInfo(user);
-      await AsyncStorage.setItem("user", JSON.stringify(user));
+const fetchUserInfo = async (token) => {
+  try {
+    const res = await fetch("https://www.googleapis.com/userinfo/v2/me", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const user = await res.json();
+    setUserInfo(user);
+    await AsyncStorage.setItem("user", JSON.stringify(user));
 
-      // Send to backend
-      await fetch("http://127.0.0.1:5000/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: user.email,
-          name: user.name,
-          isAdmin: false, // Change logic here if you want to assign admin conditionally
-        }),
-      });
+    // Check if this is the admin email
+    const isAdmin = user.email === "guyparnchinda@gmail.com";
 
-      // Navigate after storing user
-      navigation.replace("ProfessorList");
-    } catch (error) {
-      console.error("Failed to fetch or send user info:", error);
-    }
-  };
+    // Send to backend
+    await fetch("http://127.0.0.1:5000/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: user.email,
+        name: user.name,
+        isAdmin: isAdmin,
+      }),
+    });
+  navigation.replace("ProfessorList");
+  } catch (error) {
+    console.error("Error fetching user info:", error);
+  }
+};
 
   return (
     <View style={styles.container}>

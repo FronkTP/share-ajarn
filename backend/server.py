@@ -76,5 +76,28 @@ def get_reviews(professor_id):
     except MySQLdb.Error as e:
         return jsonify({"error": str(e)}), 500
 
+#get admin information
+@app.route('/api/get_user_info', methods=['POST'])
+def get_user_info():
+    cursor = mysql.connection.cursor()
+    data = request.json
+    print("data from flask backend",data)
+    email = data.get('email')
+
+    if not email:
+        return jsonify({'error': 'Email is required'}), 400
+
+    try:
+        query = "SELECT id, name, is_admin FROM users WHERE email = %s"
+        cursor.execute(query, (email,))
+        user = cursor.fetchone()
+        print("sql fetch",user)
+        if user:
+            return jsonify({'user': user}), 200
+        else:
+            return jsonify({'error': 'User not found'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     app.run(debug=True)

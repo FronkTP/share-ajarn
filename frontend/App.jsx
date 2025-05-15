@@ -6,6 +6,7 @@ import LoginScreen from './screens/LoginScreen';
 import ProfessorListScreen from './screens/ProfessorListScreen';
 import ProfessorDetailScreen from './screens/ProfessorDetailScreen';
 import AddReviewScreen from './screens/AddReviewScreen';
+import AdminDashboardScreen from './screens/AdminDashboardScreen';
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -18,6 +19,7 @@ export default function App() {
         <Stack.Screen name="ProfessorList" component={ProfessorListScreen} />
         <Stack.Screen name="ProfessorDetail" component={ProfessorDetailScreen} />
         <Stack.Screen name="AddReview" component={AddReviewScreen} />
+        <Stack.Screen name="AdminDashboard" component={AdminDashboardScreen} />
       </Stack.Navigator>
     </NavigationContainer>
     <StatusBar style="auto" />
