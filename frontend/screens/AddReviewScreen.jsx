@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import Stars from 'react-native-stars';
+import { Picker } from '@react-native-picker/picker';
+
 
 export default function AddReviewScreen({ route, navigation }) {
   const { professorId } = route.params;
@@ -41,12 +43,21 @@ const handleSubmit = async () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Add a Review</Text>
-      <TextInput
-      placeholder="Course name"
-      style={styles.input}
-      value={course}
-      onChangeText={setCourse}
-      />
+    <View style={styles.input}>
+  <Text>Course Name</Text>
+  <Picker
+    selectedValue={course}
+    onValueChange={(itemValue, itemIndex) => setCourse(itemValue)}
+    style={{ height: 50, width: '100%' }}
+  >
+    <Picker.Item label="Select a course" value="" />
+    <Picker.Item label="CS101 - Intro to CS" value="CS101" />
+    <Picker.Item label="MATH201 - Calculus II" value="MATH201" />
+    <Picker.Item label="ENG102 - English Lit" value="ENG102" />
+    {/* Add more courses here as needed */}
+  </Picker>
+</View>
+
     <View style={styles.input}>
     <Text>Rating</Text>
     <Stars
@@ -55,8 +66,8 @@ const handleSubmit = async () => {
       spacing={4}
       starSize={40}
       count={5}
-      fullStar={require('../assets/starFilled.png')}
-      emptyStar={require('../assets/starEmpty.png')}
+      fullStar={require('../assets/starYellow.png')}
+      emptyStar={require('../assets/starBlack.png')}
     />
     </View>
     <TextInput
