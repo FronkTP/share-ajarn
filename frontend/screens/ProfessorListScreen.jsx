@@ -271,6 +271,7 @@ export default function ProfessorList({ navigation }) {
             key={numColumns}
             contentContainerStyle={styles.listContainer}
             showsVerticalScrollIndicator={false}
+            columnWrapperStyle={numColumns > 1 ? { justifyContent: 'center' } : null}
           />
         )}
       </View>
@@ -354,7 +355,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingBottom: 20,
     width: '100%',
-    alignItems: 'center',
+    // alignItems: 'center',
   },
   loadingContainer: {
     flex: 1,
@@ -434,7 +435,7 @@ const styles = StyleSheet.create({
     elevation: 2,
     borderColor: colors.border,
     borderWidth: 1,
-    width: '95%',
+    // width: '95%',
   },
   mobileCardContent: {
     flexDirection: 'row',
