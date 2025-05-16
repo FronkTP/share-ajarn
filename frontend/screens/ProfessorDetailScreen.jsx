@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, SafeAreaView, StatusBar } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ScrollView, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingRight: 12,
   },
   backButtonText: {
     color: colors.secondary,

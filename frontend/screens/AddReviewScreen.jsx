@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Platform, StatusBar } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Platform, StatusBar, StyleSheet } from 'react-native';
 import Stars from 'react-native-stars';
 import { Picker } from '@react-native-picker/picker';
 
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingRight: 12,
   },
   backButtonText: {
     color: colors.secondary,
