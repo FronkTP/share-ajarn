@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: colors.cardBackground,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   searchIcon: {
     marginRight: 8,
