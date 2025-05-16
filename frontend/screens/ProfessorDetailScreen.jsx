@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, Image, ScrollView, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-
+import { BASE_URL } from "../data/BASE_URL"
 const colors = {
   background: '#fffcf2',
   cardBackground: '#ffffff',
@@ -22,7 +22,7 @@ export default function ProfessorDetailScreen({ route, navigation }) {
   const fetchReviews = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://127.0.0.1:5000/get_reviews/${professorId}`);
+      const response = await fetch(`${BASE_URL}/get_reviews/${professorId}`);
       const data = await response.json();
       if (Array.isArray(data)) {
         setReviews(data);

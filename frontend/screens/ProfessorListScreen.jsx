@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect } from 'react';
 import baseProfessors from '../data/baseProfessors';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { BASE_URL } from "../data/BASE_URL"
 
 const colors = {
   background: '#fffcf2',
@@ -82,7 +83,7 @@ export default function ProfessorList({ navigation }) {
 
   const fetchRating = async (professorId) => {
   try {
-    const response = await fetch(`http://127.0.0.1:5000/get_reviews/${professorId}`);
+    const response = await fetch(`${BASE_URL}/get_reviews/${professorId}`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -99,7 +100,7 @@ export default function ProfessorList({ navigation }) {
   
   const checkAdminStatus = async (email) => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/get_user_info', {
+      const response = await fetch(`${BASE_URL}/api/get_user_info`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
