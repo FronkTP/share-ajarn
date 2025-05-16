@@ -1,4 +1,4 @@
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, StatusBar } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StatusBar, SafeAreaView, StyleSheet } from 'react-native';
 import { useEffect, useState } from 'react';
 import baseProfessors from '../data/baseProfessors';
 
@@ -14,7 +14,7 @@ const colors = {
   shadow: '#000000',
 };
 
-export default function AdminDashboard() {
+export default function AdminDashboard({ navigation }) {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -102,10 +102,17 @@ export default function AdminDashboard() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
+      
       <View style={styles.headerContainer}>
-        <Text style={styles.header}>Pending Reviews</Text>
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={styles.backButtonText}>← Back</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Pending Reviews</Text>
         <TouchableOpacity 
           style={styles.refreshButton}
           onPress={fetchPendingReviews}
@@ -113,50 +120,72 @@ export default function AdminDashboard() {
           <Text style={styles.refreshButtonText}>Refresh</Text>
         </TouchableOpacity>
       </View>
-      {loading ? (
-        <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>Loading reviews...</Text>
-        </View>
-      ) : reviews.length === 0 ? (
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>No pending reviews</Text>
-        </View>
-      ) : (
-        <FlatList
-          data={reviews}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={styles.listContainer}
-          showsVerticalScrollIndicator={false}
-        />
-      )}
-    </View>
+      
+      <View style={styles.contentContainer}>        
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <Text style={styles.loadingText}>Loading reviews...</Text>
+          </View>
+        ) : reviews.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No pending reviews</Text>
+          </View>
+        ) : (
+          <FlatList
+            data={reviews}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+            contentContainerStyle={styles.listContainer}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    padding: 16, 
     backgroundColor: colors.background,
   },
   headerContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingBottom: 16,
+    justifyContent: 'space-between',
+    padding: 16,
+    backgroundColor: colors.cardBackground,
     borderBottomWidth: 1,
     borderBottomColor: colors.accent,
-    marginBottom: 16,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
   },
-  header: { 
-    fontSize: 28, 
+  backButton: {
+    paddingVertical: 8,
+    paddingRight: 12,
+  },
+  backButtonText: {
+    color: colors.secondary,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  headerTitle: {
+    fontSize: 18,
     fontWeight: 'bold',
     color: colors.primary,
+    flex: 1,
+    textAlign: 'center',
+  },
+  contentContainer: {
+    flex: 1,
+    padding: 16,
   },
   refreshButton: {
     backgroundColor: colors.accent,
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 8,
   },
