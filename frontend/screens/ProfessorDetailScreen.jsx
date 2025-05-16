@@ -126,7 +126,8 @@ export default function ProfessorDetailScreen({ route, navigation }) {
             style={styles.rateButton}
             onPress={() => navigation.navigate('AddReview', { 
               professorId, 
-              professorName: name 
+              professorName: name,
+              courses
             })}
           >
             <Text style={styles.rateButtonText}>Rate This Professor</Text>

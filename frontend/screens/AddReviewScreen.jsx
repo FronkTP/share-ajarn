@@ -17,7 +17,7 @@ const colors = {
 };
 
 export default function AddReviewScreen({ route, navigation }) {
-  const { professorId, professorName } = route.params;
+  const { professorId, professorName, courses } = route.params;
   const [course, setCourse] = useState('');
   const [comment, setComment] = useState('');
   const [stars, setStars] = useState(0);
@@ -105,8 +105,14 @@ export default function AddReviewScreen({ route, navigation }) {
                 mode="dropdown"
               >
                 <Picker.Item label="Select a course" value="" color={colors.textSecondary} />
-                <Picker.Item label="CS101 - Intro to Computer Science" value="CS101" color={colors.textPrimary} />
-                <Picker.Item label="MATH201 - Calculus II" value="MATH201" color={colors.textPrimary} />
+                {Array.isArray(courses) && courses.map((c, index) => (
+                  <Picker.Item 
+                    key={index} 
+                    label={c} 
+                    value={c} 
+                    color={colors.textPrimary} 
+                  />
+                ))}
               </Picker>
             </View>
           </View>
