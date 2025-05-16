@@ -50,7 +50,7 @@ export default function App() {
           AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))
         }
       >
-        <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: true }}>
+        <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="ProfessorList" component={ProfessorListScreen} />
           <Stack.Screen name="ProfessorDetail" component={ProfessorDetailScreen} />
