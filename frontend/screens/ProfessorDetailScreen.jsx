@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
   profileSection: {
     backgroundColor: colors.cardBackground,
     padding: 20,
-    marginBottom: 15,
+    marginBottom: 5,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
     shadowColor: colors.shadow,
@@ -333,7 +333,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   reviewsContainer: {
-    padding: 20,
+    paddingTop: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 10,
   },
   reviewsTitle: {
     fontSize: 20,
