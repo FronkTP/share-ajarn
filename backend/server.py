@@ -147,6 +147,47 @@ def reject_review(review_id):
         return jsonify({'message': '🗑️ Review rejected and removed'})
     except MySQLdb.Error as e:
         return jsonify({'error': str(e)}), 500
+    
+@app.route('/email_login', methods=['POST'])
+def email_login():
+    try:
+        data = request.get_json()
+        email = data.get('email')
+        password = data.get('password')
+
+        cur = mysql.connection.cursor()
+        # Query user by email
+        cur.execute("SELECT id, name, password, is_admin FROM users_a WHERE email = %s", (email,))
+        user = cur.fetchone()
+        cur.close()
+
+        if user:
+            user_id, name, db_password, is_admin = user
+            # WARNING: Plaintext password check; replace with hashed password verification in production!
+            if password == db_password:
+                return jsonify({
+                    "success": True,
+                    "user": [user_id, name, is_admin]
+                })
+        
+        # If user not found or password mismatch
+        return jsonify({
+            "success": False,
+            "message": "Invalid email or password"
+        }), 401
+
+    except MySQLdb.Error as e:
+        # Database error handling
+        return jsonify({
+            "success": False,
+            "message": str(e)
+        }), 500
+    except Exception as e:
+        # General error handling
+        return jsonify({
+            "success": False,
+            "message": "Internal server error"
+        }), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0',debug=True)
