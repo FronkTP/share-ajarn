@@ -100,7 +100,7 @@ export default function ProfessorList({ navigation }) {
   
   const checkAdminStatus = async (email) => {
     try {
-      const response = await fetch(`{BASE_URL}/api/get_user_info`, {
+      const response = await fetch(`${BASE_URL}/api/get_user_info`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),

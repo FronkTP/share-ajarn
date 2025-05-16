@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import Stars from 'react-native-stars';
 import { Picker } from '@react-native-picker/picker';
+import { BASE_URL } from "../data/BASE_URL"
 
 
 export default function AddReviewScreen({ route, navigation }) {
@@ -12,7 +13,7 @@ export default function AddReviewScreen({ route, navigation }) {
 
 const handleSubmit = async () => {
   try {
-    const response = await fetch('http://127.0.0.1:5000/add_review', {
+    const response = await fetch(`${BASE_URL}/add_review`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

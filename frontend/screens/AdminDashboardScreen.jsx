@@ -1,5 +1,6 @@
 import { View, Text, FlatList, Button, StyleSheet } from 'react-native';
 import { useEffect, useState } from 'react';
+import { BASE_URL } from "../data/BASE_URL"
 
 export default function AdminDashboard() {
   const [reviews, setReviews] = useState([]);
@@ -213,7 +214,7 @@ export default function AdminDashboard() {
   
   const fetchPendingReviews = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:5000/pending_reviews');
+      const res = await fetch(`${BASE_URL}/pending_reviews`);
       const data = await res.json();
       setReviews(data.reviews);
     } catch (error) {
@@ -223,7 +224,7 @@ export default function AdminDashboard() {
 
   const handleApprove = async (id) => {
     try {
-      const res = await fetch(`http://127.0.0.1:5000/approve_review/${id}`, {
+      const res = await fetch(`${BASE_URL}/approve_review/${id}`, {
         method: 'POST',
       });
       const data = await res.json();
@@ -236,7 +237,7 @@ export default function AdminDashboard() {
 
   const handleDelete = async (id) => {
     try {
-      const res = await fetch(`http://127.0.0.1:5000/reject_review/${id}`, {
+      const res = await fetch(`${BASE_URL}/reject_review/${id}`, {
         method: 'DELETE',
       });
       const data = await res.json();
