@@ -2,8 +2,7 @@ import { View, Text, TouchableOpacity, FlatList, Image, Dimensions, SafeAreaView
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect } from 'react';
 import baseProfessors from '../data/baseProfessors';
-import Icon from 'react-native-vector-icons/FontAwesome'; // or Ionicons, MaterialIcons, etc.
-
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const colors = {
   background: '#fffcf2',
@@ -25,15 +24,14 @@ export default function ProfessorList({ navigation }) {
   const [minRating, setMinRating] = useState(0); // Default: show all
 
   const filteredProfessors = professors.filter((prof) => {
-  const matchesSearch =
-    prof.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    prof.department.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch =
+      prof.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      prof.department.toLowerCase().includes(searchQuery.toLowerCase());
 
-  const matchesRating = parseFloat(prof.avgRating) >= minRating;
+    const matchesRating = parseFloat(prof.avgRating) >= minRating;
 
-  return matchesSearch && matchesRating;
-});
-
+    return matchesSearch && matchesRating;
+  });
 
   const [screenWidth, setScreenWidth] = useState(Dimensions.get('window').width);
   const cardWidth = 200;
@@ -41,9 +39,9 @@ export default function ProfessorList({ navigation }) {
   const isMobile = screenWidth < 400;
 
   const logout = async () => {
-  await AsyncStorage.removeItem('user');
-  navigation.replace('Login'); // or navigation.reset() if you want to clear stack
-};
+    await AsyncStorage.removeItem('user');
+    navigation.replace('Login');
+  };
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -63,7 +61,7 @@ export default function ProfessorList({ navigation }) {
     };
 
     fetchUserInfo();
-    }, []);
+  }, []);
 
   useEffect(() => {
     const fetchRatings = async () => {
@@ -94,8 +92,7 @@ export default function ProfessorList({ navigation }) {
   } catch (error) {
     console.error("Failed to fetch rating for professor", professorId, error);
     return 0;
-  }
-  };
+  }};
   
   const checkAdminStatus = async (email) => {
     try {
@@ -131,9 +128,9 @@ export default function ProfessorList({ navigation }) {
     }
   };
 
-    useEffect(() => {
-      const updateLayout = () => {
-        setScreenWidth(Dimensions.get('window').width);
+  useEffect(() => {
+    const updateLayout = () => {
+      setScreenWidth(Dimensions.get('window').width);
     };
     
     Dimensions.addEventListener('change', updateLayout);
@@ -208,7 +205,6 @@ export default function ProfessorList({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header - Full Width */}
       <View style={styles.headerContainer}>
         {userName ? <Text style={styles.title}>Welcome, {userName}!</Text> : null}
         <View style={styles.buttonContainer}>
@@ -226,7 +222,6 @@ export default function ProfessorList({ navigation }) {
         </View>
       </View>
 
-      {/* Search Bar - Full Width */}
       <View style={styles.searchBarContainer}>
         <Icon name="search" size={18} color={colors.textSecondary} style={styles.searchIcon} />
         <TextInput
@@ -238,7 +233,6 @@ export default function ProfessorList({ navigation }) {
         />
       </View>
 
-      {/* Filter Section - Full Width */}
       <View style={styles.filterContainer}>
         <Text style={styles.filterLabel}>Filter by Rating:</Text>
         <View style={styles.ratingButtons}>
@@ -257,7 +251,6 @@ export default function ProfessorList({ navigation }) {
         </View>
       </View>
 
-      {/* Professor List - Full Width Container with Centered Cards */}
       <View style={styles.listWrapper}>
         <FlatList
           data={filteredProfessors}
@@ -296,10 +289,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingBottom: 20,
     width: '100%',
-    alignItems: 'center', // Center align all cards
+    alignItems: 'center',
   },
   listNotFull: {
-    alignItems: 'center', // Center align cards when not enough to fill row
+    alignItems: 'center',
   },
   title: {
     fontSize: 24,
