@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, FlatList, Image, Dimensions, SafeAreaView, StyleSheet, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, Image, Dimensions, SafeAreaView, StyleSheet, TextInput, StatusBar } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect } from 'react';
 import baseProfessors from '../data/baseProfessors';
@@ -22,6 +22,7 @@ export default function ProfessorList({ navigation }) {
   const [professors, setProfessors] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [minRating, setMinRating] = useState(0); // Default: show all
+  const [loading, setLoading] = useState(true);
 
   const filteredProfessors = professors.filter((prof) => {
     const matchesSearch =
@@ -65,6 +66,7 @@ export default function ProfessorList({ navigation }) {
 
   useEffect(() => {
     const fetchRatings = async () => {
+      setLoading(true);
       const updatedProfessors = await Promise.all(
         baseProfessors.map(async (prof) => {
           const avgRating = await fetchRating(prof.id);
@@ -72,6 +74,7 @@ export default function ProfessorList({ navigation }) {
         })
       );
       setProfessors(updatedProfessors);
+      setLoading(false);
     };
 
     fetchRatings();
@@ -205,15 +208,25 @@ export default function ProfessorList({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
+      
       <View style={styles.headerContainer}>
-        {userName ? <Text style={styles.title}>Welcome, {userName}!</Text> : null}
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={styles.backButtonText}>← Back</Text>
+        </TouchableOpacity>
+        
+        {userName ? <Text style={styles.welcomeText}>Welcome, {userName}!</Text> : null}
+        
         <View style={styles.buttonContainer}>
           {isAdmin && (
             <TouchableOpacity
               style={styles.adminButton}
               onPress={() => navigation.navigate('AdminDashboard')}
             >
-              <Text style={styles.buttonText}>Go to Admin Dashboard</Text>
+              <Text style={styles.buttonText}>Admin</Text>
             </TouchableOpacity>
           )}
           <TouchableOpacity onPress={logout} style={styles.logoutButton}>
@@ -252,15 +265,21 @@ export default function ProfessorList({ navigation }) {
       </View>
 
       <View style={styles.listWrapper}>
-        <FlatList
-          data={filteredProfessors}
-          keyExtractor={(item) => item.id}
-          renderItem={renderProfessorCard}
-          numColumns={numColumns}
-          key={numColumns}
-          contentContainerStyle={styles.listContainer}
-          showsVerticalScrollIndicator={false}
-        />
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <Text style={styles.loadingText}>Loading professors...</Text>
+          </View>
+        ) : (
+          <FlatList
+            data={filteredProfessors}
+            keyExtractor={(item) => item.id}
+            renderItem={renderProfessorCard}
+            numColumns={numColumns}
+            key={numColumns}
+            contentContainerStyle={styles.listContainer}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
       </View>
     </SafeAreaView>
   );
@@ -274,33 +293,35 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    backgroundColor: colors.background,
-    width: '100%',
+    padding: 16,
+    backgroundColor: colors.cardBackground,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.accent,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
   },
-  listWrapper: {
-    flex: 1,
-    width: '100%',
-  },
-  listContainer: {
+  backButton: {
+    paddingVertical: 8,
     paddingHorizontal: 12,
-    paddingBottom: 20,
-    width: '100%',
-    alignItems: 'center',
   },
-  listNotFull: {
-    alignItems: 'center',
+  backButtonText: {
+    color: colors.secondary,
+    fontSize: 16,
+    fontWeight: '600',
   },
-  title: {
-    fontSize: 24,
+  welcomeText: {
+    fontSize: 18,
     fontWeight: 'bold',
     color: colors.primary,
+    flex: 1,
+    textAlign: 'center',
   },
   buttonContainer: {
-    display: 'flex',
     flexDirection: 'row',
     gap: 10,
   },
@@ -316,16 +337,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     width: 'auto',
   },
-  logoutButton: {
-    backgroundColor: colors.primary,
-    padding: 10,
-    borderRadius: 8,
-  },
   adminButton: {
     backgroundColor: colors.secondary,
-    padding: 10,
+    padding: 8,
+    paddingHorizontal: 12,
     borderRadius: 8,
     alignItems: 'center',
+  },
+  logoutButton: {
+    backgroundColor: colors.primary,
+    padding: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
   },
   buttonText: {
     color: colors.cardBackground,
@@ -339,6 +362,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingVertical: 10,
     color: colors.textPrimary,
+  },
+  listWrapper: {
+    flex: 1,
+    width: '100%',
+  },
+  listContainer: {
+    paddingHorizontal: 12,
+    paddingBottom: 20,
+    width: '100%',
+    alignItems: 'center',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  loadingText: {
+    fontSize: 16,
+    color: colors.textSecondary,
   },
   filterContainer: {
     marginHorizontal: 16,
