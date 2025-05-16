@@ -134,7 +134,7 @@ export default function ProfessorDetailScreen({ route, navigation }) {
         </View>
         
         <View style={styles.reviewsContainer}>
-          <Text style={styles.reviewsTitle}>Student Reviews</Text>
+          <Text style={styles.reviewsTitle}>Student Reviews ({reviews.length})</Text>
           
           {loading ? (
             <View style={styles.loadingContainer}>
