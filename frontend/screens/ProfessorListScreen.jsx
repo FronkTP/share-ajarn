@@ -207,54 +207,58 @@ export default function ProfessorList({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={[styles.container, isMobile ? null : { alignItems: 'center' }]}>
-      <View style={styles.container}>
-        {userName ? <Text style={styles.welcome}>Welcome, {userName}!</Text> : null}
-        <TouchableOpacity onPress={logout} style={styles.logoutButton}>
-        <Text style={styles.logoutText}>Logout</Text>
-        </TouchableOpacity>
-        {isAdmin && (
-          <TouchableOpacity
-            style={styles.adminButton}
-            onPress={() => navigation.navigate('AdminDashboard')}
-          >
-            <Text style={styles.adminButtonText}>Go to Admin Dashboard</Text>
+    <SafeAreaView style={styles.container}>
+      {/* Header - Full Width */}
+      <View style={styles.headerContainer}>
+        {userName ? <Text style={styles.title}>Welcome, {userName}!</Text> : null}
+        <View style={styles.buttonContainer}>
+          {isAdmin && (
+            <TouchableOpacity
+              style={styles.adminButton}
+              onPress={() => navigation.navigate('AdminDashboard')}
+            >
+              <Text style={styles.buttonText}>Go to Admin Dashboard</Text>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity onPress={logout} style={styles.logoutButton}>
+            <Text style={styles.buttonText}>Logout</Text>
           </TouchableOpacity>
-        )}
-
-        <Text style={styles.title}>Professor List</Text>
-
-        <View style={styles.searchBarContainer}>
-          <Icon name="search" size={18} color={colors.textSecondary} style={styles.searchIcon} />
-          <TextInput
-            style={styles.searchBarInput}
-            placeholder="Search professor's name / department"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            placeholderTextColor={colors.textSecondary}
-          />
         </View>
+      </View>
 
+      {/* Search Bar - Full Width */}
+      <View style={styles.searchBarContainer}>
+        <Icon name="search" size={18} color={colors.textSecondary} style={styles.searchIcon} />
+        <TextInput
+          style={styles.searchBarInput}
+          placeholder="Search professor's name / department"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          placeholderTextColor={colors.textSecondary}
+        />
+      </View>
 
-        <View style={styles.filterContainer}>
-          <Text style={styles.filterLabel}>Filter by Rating:</Text>
-          <View style={styles.ratingButtons}>
-            {[1, 2, 3, 4, 5].map((rating) => (
-              <TouchableOpacity
-                key={rating}
-                style={[
-                  styles.ratingButton,
-                  minRating === rating && styles.ratingButtonActive,
-                ]}
-                onPress={() => setMinRating(minRating === rating ? 0 : rating)}
-              >
-                <Text style={styles.ratingButtonText}>{rating}+</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+      {/* Filter Section - Full Width */}
+      <View style={styles.filterContainer}>
+        <Text style={styles.filterLabel}>Filter by Rating:</Text>
+        <View style={styles.ratingButtons}>
+          {[1, 2, 3, 4, 5].map((rating) => (
+            <TouchableOpacity
+              key={rating}
+              style={[
+                styles.ratingButton,
+                minRating === rating && styles.ratingButtonActive,
+              ]}
+              onPress={() => setMinRating(minRating === rating ? 0 : rating)}
+            >
+              <Text style={styles.ratingButtonText}>{rating}+</Text>
+            </TouchableOpacity>
+          ))}
         </View>
+      </View>
 
-
+      {/* Professor List - Full Width Container with Centered Cards */}
+      <View style={styles.listWrapper}>
         <FlatList
           data={filteredProfessors}
           keyExtractor={(item) => item.id}
@@ -273,41 +277,66 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+    width: '100%',
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    backgroundColor: colors.background,
+    width: '100%',
+  },
+  listWrapper: {
+    flex: 1,
+    width: '100%',
   },
   listContainer: {
-    padding: 12,
+    paddingHorizontal: 12,
     paddingBottom: 20,
+    width: '100%',
+    alignItems: 'center', // Center align all cards
+  },
+  listNotFull: {
+    alignItems: 'center', // Center align cards when not enough to fill row
   },
   title: {
-    marginTop: 20,
-    marginBottom: 20,
     fontSize: 24,
     fontWeight: 'bold',
-    textAlign: 'center',
     color: colors.primary,
+  },
+  buttonContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 10,
   },
   searchBarContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: 16,
-    marginBottom: 20,
+    marginVertical: 16,
     backgroundColor: '#fff',
     borderRadius: 8,
     borderColor: colors.border,
     borderWidth: 1,
     paddingHorizontal: 10,
+    width: 'auto',
   },
-  searchBar: {
-    marginHorizontal: 16,
-    marginBottom: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    backgroundColor: '#fff',
+  logoutButton: {
+    backgroundColor: colors.primary,
+    padding: 10,
     borderRadius: 8,
-    borderColor: colors.border,
-    borderWidth: 1,
-    fontSize: 16,
-    color: colors.textPrimary,
+  },
+  adminButton: {
+    backgroundColor: colors.secondary,
+    padding: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: colors.cardBackground,
+    fontWeight: 'bold',
   },
   searchIcon: {
     marginRight: 8,
@@ -320,12 +349,13 @@ const styles = StyleSheet.create({
   },
   filterContainer: {
     marginHorizontal: 16,
-    marginBottom: 20,
+    marginBottom: 16,
+    width: 'auto',
   },
   filterLabel: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: colors.textPrimary,
+    color: colors.primary,
     marginBottom: 8,
   },
   ratingButtons: {
@@ -385,6 +415,7 @@ const styles = StyleSheet.create({
     elevation: 2,
     borderColor: colors.border,
     borderWidth: 1,
+    width: '95%',
   },
   mobileCardContent: {
     flexDirection: 'row',
@@ -416,27 +447,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     color: colors.primary,
-  },
-  adminButton: {
-    backgroundColor: '#007bff',
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 20,
-    alignItems: 'center',
-  },
-  adminButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  logoutButton: {
-    backgroundColor: '#A31D1D',
-    padding: 10,
-    borderRadius: 8,
-    alignSelf: 'flex-end',
-    margin: 10,
-  },
-  logoutText: {
-    color: 'white',
-    fontWeight: 'bold',
   },
 });
