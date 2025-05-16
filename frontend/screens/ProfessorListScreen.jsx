@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, FlatList, Image, Dimensions, SafeAreaView, StyleSheet, TextInput, StatusBar } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, Image, Dimensions, SafeAreaView, TextInput, StatusBar, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect } from 'react';
 import baseProfessors from '../data/baseProfessors';
@@ -211,13 +211,6 @@ export default function ProfessorList({ navigation }) {
       <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
       
       <View style={styles.headerContainer}>
-        <TouchableOpacity 
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.backButtonText}>← Back</Text>
-        </TouchableOpacity>
-        
         {userName ? <Text style={styles.welcomeText}>Welcome, {userName}!</Text> : null}
         
         <View style={styles.buttonContainer}>
@@ -305,21 +298,11 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 3,
   },
-  backButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-  },
-  backButtonText: {
-    color: colors.secondary,
-    fontSize: 16,
-    fontWeight: '600',
-  },
   welcomeText: {
     fontSize: 18,
     fontWeight: 'bold',
     color: colors.primary,
-    flex: 1,
-    textAlign: 'center',
+    textAlign: 'left',
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -339,7 +322,7 @@ const styles = StyleSheet.create({
   },
   adminButton: {
     backgroundColor: colors.secondary,
-    padding: 8,
+    paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 8,
     alignItems: 'center',
