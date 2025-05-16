@@ -1,85 +1,166 @@
 import { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Platform, StatusBar } from 'react-native';
 import Stars from 'react-native-stars';
 import { Picker } from '@react-native-picker/picker';
 
+const colors = {
+  background: '#fffcf2',
+  cardBackground: '#ffffff',
+  primary: '#6D2323',
+  secondary: '#A31D1D',
+  accent: '#E5D0AC',
+  textPrimary: '#333333',
+  textSecondary: '#555555',
+  border: '#e0e0e0',
+  shadow: '#000000',
+};
 
 export default function AddReviewScreen({ route, navigation }) {
-  const { professorId } = route.params;
-  const [course,setCourse] = useState('');
+  const { professorId, professorName } = route.params;
+  const [course, setCourse] = useState('');
   const [comment, setComment] = useState('');
-  const [stars,setStars] = useState(0);
+  const [stars, setStars] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
 
-const handleSubmit = async () => {
-  try {
-    const response = await fetch('http://127.0.0.1:5000/add_review', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        professorId,
-        course,
-        stars,
-        comment,
-      }),
-    });
-
-    const data = await response.json();
-    console.log(data);
-
-    if (response.ok) {
-      alert('Review submitted!');
-      navigation.goBack();
-    } else {
-      alert('Failed to submit: ' + data.error);
+  const handleSubmit = async () => {
+    // Form validation
+    if (!course) {
+      alert('Please select a course');
+      return;
     }
-  } catch (error) {
-    console.error('Error:', error);
-    alert('An error occurred.');
-  }
-};
+    
+    if (stars === 0) {
+      alert('Please provide a rating');
+      return;
+    }
+    
+    setSubmitting(true);
+    
+    try {
+      const response = await fetch('http://127.0.0.1:5000/add_review', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          professorId,
+          course,
+          stars,
+          comment,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert('Review submitted successfully!');
+        navigation.goBack();
+      } else {
+        alert('Failed to submit: ' + (data.error || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Network error. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Add a Review</Text>
-    
-    <View style={styles.pickerContainer}>
-  <Text style={styles.label}>Course Name</Text>
-  <Picker
-    selectedValue={course}
-    onValueChange={(itemValue) => setCourse(itemValue)}
-    style={styles.picker}
-    dropdownIconColor="#A31D1D"
-  >
-    <Picker.Item label="Select a course" value="" />
-    <Picker.Item label="CS101 - Intro to CS" value="CS101" />
-    <Picker.Item label="MATH201 - Calculus II" value="MATH201" />
-    <Picker.Item label="ENG102 - English Lit" value="ENG102" />
-  </Picker>
-</View>
+      <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
+      
+      <View style={styles.headerContainer}>
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={styles.backButtonText}>← Back</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Add a Review</Text>
+        <View style={styles.headerRight} />
+      </View>
+      
+      <ScrollView 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {professorName && (
+          <View style={styles.professorCard}>
+            <Text style={styles.professorLabel}>Professor:</Text>
+            <Text style={styles.professorName}>{professorName}</Text>
+          </View>
+        )}
+        
+        <View style={styles.formContainer}>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Course Name</Text>
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={course}
+                onValueChange={(itemValue) => setCourse(itemValue)}
+                style={styles.picker}
+                dropdownIconColor={colors.secondary}
+                mode="dropdown"
+              >
+                <Picker.Item label="Select a course" value="" color={colors.textSecondary} />
+                <Picker.Item label="CS101 - Intro to Computer Science" value="CS101" color={colors.textPrimary} />
+                <Picker.Item label="MATH201 - Calculus II" value="MATH201" color={colors.textPrimary} />
+              </Picker>
+            </View>
+          </View>
 
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Rating</Text>
+            <View style={styles.ratingContainer}>
+              <Stars
+                default={0}
+                update={(val) => setStars(val)}
+                spacing={8}
+                starSize={36}
+                count={5}
+                fullStar={require('../assets/starYellow.png')}
+                emptyStar={require('../assets/starBlack.png')}
+              />
+              <Text style={styles.ratingHint}>
+                {stars === 0 ? 'Tap to rate' : `${stars}/5 stars`}
+              </Text>
+            </View>
+          </View>
 
-    <View style={styles.input}>
-    <Text style={styles.label}>Rating</Text>
-    <Stars
-      default={0}
-      update={(val)=> setStars(val)}
-      spacing={4}
-      starSize={40}
-      count={5}
-      fullStar={require('../assets/starYellow.png')}
-      emptyStar={require('../assets/starBlack.png')}
-    />
-    </View>
-    <TextInput
-        placeholder="Optional Comment"
-        style={styles.input}
-        value={comment}
-        onChangeText={setComment}
-    />
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Comments</Text>
+            <TextInput
+              placeholder="Share your experience with this professor..."
+              placeholderTextColor={colors.textSecondary}
+              style={styles.commentInput}
+              value={comment}
+              onChangeText={setComment}
+              multiline
+              numberOfLines={Platform.OS === 'ios' ? null : 4}
+              minHeight={Platform.OS === 'ios' ? 100 : null}
+              textAlignVertical="top"
+            />
+          </View>
 
-    <Button title="Submit Review" onPress={handleSubmit} color="#6D2323" />
+          <TouchableOpacity 
+            style={[
+              styles.submitButton,
+              submitting && styles.submitButtonDisabled
+            ]}
+            onPress={handleSubmit}
+            disabled={submitting}
+          >
+            <Text style={styles.submitButtonText}>
+              {submitting ? 'Submitting...' : 'Submit Review'}
+            </Text>
+          </TouchableOpacity>
+          
+          <Text style={styles.disclaimer}>
+            Your review will be submitted for approval by moderators.
+          </Text>
+        </View>
+      </ScrollView>
     </View>
   );
 }
@@ -87,44 +168,145 @@ const handleSubmit = async () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    justifyContent: 'flex-start',
-    backgroundColor: '#FFFCF2',
+    backgroundColor: colors.background,
   },
-  title: {
-    fontSize: 24,
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    backgroundColor: colors.cardBackground,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.accent,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  backButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  backButtonText: {
+    color: colors.secondary,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  headerTitle: {
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#6D2323',
+    color: colors.primary,
+    flex: 1,
+    textAlign: 'center',
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#E5D0AC',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 15,
-    width: '100%',
-    backgroundColor: '#FFF',
-    color: '#6D2323',
+  headerRight: {
+    width: 48, // Match width of back button
+  },
+  scrollContent: {
+    padding: 16,
+  },
+  professorCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.cardBackground,
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 20,
+    borderLeftWidth: 4,
+    borderLeftColor: colors.primary,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  professorLabel: {
+    fontSize: 16,
+    color: colors.textSecondary,
+    marginRight: 8,
+  },
+  professorName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.primary,
+  },
+  formContainer: {
+    backgroundColor: colors.cardBackground,
+    borderRadius: 12,
+    padding: 16,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  inputGroup: {
+    marginBottom: 20,
   },
   label: {
-    marginBottom: 5,
-    color: '#A31D1D',
-    fontWeight: '500',
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.primary,
+    marginBottom: 8,
   },
   pickerContainer: {
     borderWidth: 1,
-    borderColor: '#E5D0AC',
-    borderRadius: 5,
-    marginBottom: 15,
-    backgroundColor: '#FFF',
+    borderColor: colors.border,
+    borderRadius: 8,
+    backgroundColor: colors.cardBackground,
     overflow: 'hidden',
   },
   picker: {
-    color: '#6D2323',
-    paddingHorizontal: 10,
-    height: 40,
+    height: 50,
     width: '100%',
+    color: colors.textPrimary,
+  },
+  ratingContainer: {
+    alignItems: 'center',
+    paddingVertical: 12,
+  },
+  ratingHint: {
+    marginTop: 8,
+    color: colors.textSecondary,
+    fontSize: 14,
+  },
+  commentInput: {
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 8,
+    padding: 12,
+    backgroundColor: colors.cardBackground,
+    color: colors.textPrimary,
+    fontSize: 16,
+  },
+  submitButton: {
+    backgroundColor: colors.primary,
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: 'center',
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+    marginTop: 8,
+  },
+  submitButtonDisabled: {
+    backgroundColor: '#9E7E7E', // Lighter version of primary color
+    shadowOpacity: 0,
+    elevation: 0,
+  },
+  submitButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  disclaimer: {
+    marginTop: 16,
+    textAlign: 'center',
+    color: colors.textSecondary,
+    fontSize: 12,
+    fontStyle: 'italic',
   },
 });
-
