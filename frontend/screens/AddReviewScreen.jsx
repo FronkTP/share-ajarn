@@ -54,7 +54,7 @@ export default function AddReviewScreen({ route, navigation }) {
       const data = await response.json();
 
       if (response.ok) {
-        alert('Review submitted successfully!');
+        alert('Review submitted successfully! It will appear after being approved by a moderator.');
         navigation.goBack();
       } else {
         alert('Failed to submit: ' + (data.error || 'Unknown error'));
