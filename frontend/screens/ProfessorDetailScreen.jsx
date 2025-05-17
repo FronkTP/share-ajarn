@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image, ScrollView, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ScrollView, SafeAreaView, StatusBar, StyleSheet, Platform } from 'react-native';
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { BASE_URL } from "../data/BASE_URL"
@@ -66,7 +66,11 @@ export default function ProfessorDetailScreen({ route, navigation }) {
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
       
-      <View style={styles.headerContainer}>
+      <View style={[
+        styles.headerContainer,
+        Platform.OS === 'ios' ? styles.headerIOS : null,
+        Platform.OS === 'android' ? styles.headerAndroid : null
+      ]}>
         <TouchableOpacity 
           style={styles.backButton}
           onPress={() => navigation.goBack()}
@@ -187,6 +191,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 3,
+  },
+  // iOS specific header styling
+  headerIOS: {
+    paddingTop: Platform.OS === 'ios' ? 44 : 16, // Add extra padding for status bar on iOS
+  },
+  // Android specific header styling
+  headerAndroid: {
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 10 : 16, // Use StatusBar.currentHeight for Android
   },
   backButton: {
     paddingVertical: 8,
